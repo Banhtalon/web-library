@@ -4,14 +4,23 @@ const FILE_LABELS = {
   javascript: "script.js"
 };
 
+const PREVIEW_MESSAGE_SOURCE = "webblocks-preview";
+
 function escapeClosingTag(code, tagName) {
   const pattern = new RegExp(`</${tagName}`, "gi");
   return code.replace(pattern, `<\\/${tagName}`);
 }
 
-export function buildPreviewDocument({ html, css, javascript }) {
+export function buildPreviewDocument({
+  html,
+  css,
+  javascript,
+  renderId = ""
+}) {
   const safeCss = escapeClosingTag(css, "style");
   const safeJavaScript = escapeClosingTag(javascript, "script");
+  const serializedRenderId = JSON.stringify(String(renderId));
+  const serializedMessageSource = JSON.stringify(PREVIEW_MESSAGE_SOURCE);
 
   return `<!doctype html>
 <html lang="vi">
@@ -28,7 +37,10 @@ export function buildPreviewDocument({ html, css, javascript }) {
         left: 12px;
         z-index: 99999;
         display: none;
+        max-height: 45vh;
+        margin: 0;
         padding: 12px 14px;
+        overflow: auto;
         border: 1px solid #e8a18f;
         border-radius: 9px;
         color: #7f2614;
@@ -44,11 +56,25 @@ export function buildPreviewDocument({ html, css, javascript }) {
     <pre id="webblocks-error" role="alert"></pre>
     <script>
       (function () {
+        const messageSource = ${serializedMessageSource};
+        const renderId = ${serializedRenderId};
         const errorBox = document.querySelector("#webblocks-error");
 
+        function notifyParent(type, extraData) {
+          window.parent.postMessage(
+            Object.assign(
+              { source: messageSource, type: type, renderId: renderId },
+              extraData || {}
+            ),
+            "*"
+          );
+        }
+
         function showError(message) {
+          const readableMessage = String(message || "Lỗi không xác định");
           errorBox.style.display = "block";
-          errorBox.textContent = "JavaScript Error: " + message;
+          errorBox.textContent = "JavaScript Error: " + readableMessage;
+          notifyParent("error", { message: readableMessage });
         }
 
         window.addEventListener("error", function (event) {
@@ -56,12 +82,26 @@ export function buildPreviewDocument({ html, css, javascript }) {
         });
 
         window.addEventListener("unhandledrejection", function (event) {
-          showError(event.reason && event.reason.message ? event.reason.message : String(event.reason));
+          const reason =
+            event.reason && event.reason.message
+              ? event.reason.message
+              : String(event.reason);
+          showError(reason);
         });
       })();
     <\/script>
     <script>
       ${safeJavaScript}
+    <\/script>
+    <script>
+      window.parent.postMessage(
+        {
+          source: ${serializedMessageSource},
+          type: "ready",
+          renderId: ${serializedRenderId}
+        },
+        "*"
+      );
     <\/script>
   </body>
 </html>`;
@@ -84,16 +124,20 @@ export function createPlayground() {
   let originalCode = { html: "", css: "", javascript: "" };
   let activeEditor = "html";
   let statusTimer;
-  let previewUrl = "";
+  let renderTimer;
+  let readyTimer;
   let renderVersion = 0;
+  let currentRenderHasError = false;
 
-  function setStatus(message) {
+  function setStatus(message, duration = 2400) {
     window.clearTimeout(statusTimer);
     actionStatus.textContent = message;
 
-    statusTimer = window.setTimeout(() => {
-      actionStatus.textContent = "";
-    }, 2400);
+    if (duration > 0) {
+      statusTimer = window.setTimeout(() => {
+        actionStatus.textContent = "";
+      }, duration);
+    }
   }
 
   function getCurrentCode() {
@@ -104,34 +148,44 @@ export function createPlayground() {
     };
   }
 
-  function renderPreview(previewDocument) {
-    const nextPreviewUrl = URL.createObjectURL(
-      new Blob([previewDocument], { type: "text/html;charset=utf-8" })
+  function renderPreview(previewDocument, version) {
+    // srcdoc hoạt động ổn định cả khi website đang nằm trong một iframe sandbox.
+    // Gắn render id để việc chạy lại cùng một đoạn code vẫn tạo navigation mới.
+    const uniqueDocument = previewDocument.replace(
+      "</html>",
+      `<!-- webblocks-render:${version} --></html>`
     );
-    const previousPreviewUrl = previewUrl;
 
-    previewUrl = nextPreviewUrl;
-    frame.removeAttribute("srcdoc");
-    frame.src = nextPreviewUrl;
-
-    if (previousPreviewUrl) {
-      URL.revokeObjectURL(previousPreviewUrl);
-    }
+    frame.removeAttribute("src");
+    frame.srcdoc = uniqueDocument;
   }
 
   function run() {
-    const previewDocument = buildPreviewDocument(getCurrentCode());
     const currentRender = ++renderVersion;
-
-    setStatus("Đang cập nhật kết quả...");
-
-    // Chờ đến frame kế tiếp để dialog kịp hiển thị trước khi nạp iframe.
-    // Cách này tránh trường hợp iframe trắng trên một số trình duyệt khi
-    // src được gán lúc <dialog> vẫn đang đóng.
-    window.requestAnimationFrame(() => {
-      if (currentRender !== renderVersion) return;
-      renderPreview(previewDocument);
+    const previewDocument = buildPreviewDocument({
+      ...getCurrentCode(),
+      renderId: currentRender
     });
+
+    currentRenderHasError = false;
+    window.clearTimeout(renderTimer);
+    window.clearTimeout(readyTimer);
+    frame.setAttribute("aria-busy", "true");
+    setStatus("Đang cập nhật kết quả...", 0);
+
+    // Đợi task kế tiếp để <dialog> được mở và có kích thước trước khi nạp iframe.
+    // Điều này tránh preview trắng trên một số trình duyệt/môi trường nhúng.
+    renderTimer = window.setTimeout(() => {
+      if (currentRender !== renderVersion) return;
+
+      renderPreview(previewDocument, currentRender);
+
+      readyTimer = window.setTimeout(() => {
+        if (currentRender !== renderVersion) return;
+        frame.removeAttribute("aria-busy");
+        setStatus("Preview chưa phản hồi — hãy bấm Chạy code để thử lại", 5000);
+      }, 3000);
+    }, 0);
   }
 
   function selectEditor(language) {
@@ -173,7 +227,7 @@ export function createPlayground() {
     editors.css.value = originalCode.css;
     editors.javascript.value = originalCode.javascript;
     run();
-    setStatus("Đã khôi phục code gốc");
+    setStatus("Đã khôi phục code gốc", 1200);
   }
 
   async function copyActiveEditor() {
@@ -189,9 +243,32 @@ export function createPlayground() {
     }
   }
 
-  frame.addEventListener("load", () => {
-    setStatus("Đã cập nhật kết quả");
-  });
+  function handlePreviewMessage(event) {
+    if (event.source !== frame.contentWindow) return;
+
+    const data = event.data;
+    if (!data || data.source !== PREVIEW_MESSAGE_SOURCE) return;
+    if (String(data.renderId) !== String(renderVersion)) return;
+
+    if (data.type === "error") {
+      currentRenderHasError = true;
+      window.clearTimeout(readyTimer);
+      frame.removeAttribute("aria-busy");
+      setStatus("Ví dụ có lỗi JavaScript — xem thông báo trong preview", 5000);
+      return;
+    }
+
+    if (data.type === "ready") {
+      window.clearTimeout(readyTimer);
+      frame.removeAttribute("aria-busy");
+
+      if (!currentRenderHasError) {
+        setStatus("Đã cập nhật kết quả");
+      }
+    }
+  }
+
+  window.addEventListener("message", handlePreviewMessage);
 
   tabButtons.forEach((button) => {
     button.addEventListener("click", () => selectEditor(button.dataset.editor));
@@ -211,10 +288,6 @@ export function createPlayground() {
         run();
       }
     });
-  });
-
-  window.addEventListener("beforeunload", () => {
-    if (previewUrl) URL.revokeObjectURL(previewUrl);
   });
 
   runButton.addEventListener("click", run);

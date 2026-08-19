@@ -156,11 +156,14 @@ function openDetail(itemId, { updateHistory = true } = {}) {
   if (!item) return;
 
   state.activeItemId = item.id;
-  fillDetail(item);
 
+  // Mở dialog trước khi nạp playground để iframe có kích thước ổn định.
+  // Một số trình duyệt có thể để iframe trắng nếu srcdoc được gán lúc dialog đóng.
   if (!elements.detailDialog.open) {
     elements.detailDialog.showModal();
   }
+
+  fillDetail(item);
 
   if (updateHistory && window.location.hash !== `#${item.id}`) {
     safelyUpdateHistory("pushState", { itemId: item.id }, `#${item.id}`);
