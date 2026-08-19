@@ -121,21 +121,6 @@
           </button>
         </header>
 
-        <div class="learning-strip">
-          <article class="learning-card note-card">
-            <span>Ghi nhớ</span>
-            <p id="detail-note"></p>
-          </article>
-          <article class="learning-card mistake-card">
-            <span>Lỗi thường gặp</span>
-            <p id="detail-mistake"></p>
-          </article>
-          <article class="learning-card exercise-card">
-            <span>Thử thách nhỏ</span>
-            <p id="detail-exercise"></p>
-          </article>
-        </div>
-
         <section class="playground" aria-label="Khu vực chạy thử code">
           <div class="editor-panel">
             <div class="panel-header">
@@ -172,36 +157,49 @@
             </div>
 
             <div class="editor-stack">
-              <label class="sr-only" for="html-editor">Mã HTML</label>
-              <textarea
-                id="html-editor"
-                class="code-editor is-active"
-                data-code-editor="html"
-                spellcheck="false"
-              ></textarea>
+              <div class="code-editor-shell is-active" data-code-shell="html">
+                <pre class="code-highlight" aria-hidden="true"><code data-code-highlight="html"></code></pre>
+                <label class="sr-only" for="html-editor">Mã HTML</label>
+                <textarea
+                  id="html-editor"
+                  class="code-editor"
+                  data-code-editor="html"
+                  spellcheck="false"
+                  wrap="off"
+                ></textarea>
+              </div>
 
-              <label class="sr-only" for="css-editor">Mã CSS</label>
-              <textarea
-                id="css-editor"
-                class="code-editor"
-                data-code-editor="css"
-                spellcheck="false"
-                hidden
-              ></textarea>
+              <div class="code-editor-shell" data-code-shell="css" hidden>
+                <pre class="code-highlight" aria-hidden="true"><code data-code-highlight="css"></code></pre>
+                <label class="sr-only" for="css-editor">Mã CSS</label>
+                <textarea
+                  id="css-editor"
+                  class="code-editor"
+                  data-code-editor="css"
+                  spellcheck="false"
+                  wrap="off"
+                ></textarea>
+              </div>
 
-              <label class="sr-only" for="js-editor">Mã JavaScript</label>
-              <textarea
-                id="js-editor"
-                class="code-editor"
-                data-code-editor="javascript"
-                spellcheck="false"
-                hidden
-              ></textarea>
+              <div class="code-editor-shell" data-code-shell="javascript" hidden>
+                <pre class="code-highlight" aria-hidden="true"><code data-code-highlight="javascript"></code></pre>
+                <label class="sr-only" for="js-editor">Mã JavaScript</label>
+                <textarea
+                  id="js-editor"
+                  class="code-editor"
+                  data-code-editor="javascript"
+                  spellcheck="false"
+                  wrap="off"
+                ></textarea>
+              </div>
             </div>
 
             <div class="editor-actions">
               <button id="run-code" class="primary-button" type="button">
                 ▶ Chạy code
+              </button>
+              <button id="format-code" class="secondary-button" type="button" title="Shift + Alt + F">
+                ✦ Format Document
               </button>
               <button id="reset-code" class="secondary-button" type="button">
                 Đặt lại
@@ -228,8 +226,57 @@
             ></iframe>
           </div>
         </section>
+
+        <section id="quick-action-section" class="quick-action-section" aria-labelledby="quick-action-title" hidden>
+          <div class="quick-action-heading">
+            <div>
+              <p class="section-kicker">THỬ NHANH</p>
+              <h3 id="quick-action-title">Đổi giá trị display</h3>
+              <p>Nhấn một giá trị để cập nhật trực tiếp code CSS và xem kết quả ngay.</p>
+            </div>
+            <span class="quick-action-tip">Editor + Preview cập nhật cùng lúc</span>
+          </div>
+          <div id="quick-action-list" class="quick-action-list"></div>
+        </section>
+
+        <section id="suggestion-section" class="suggestion-section" aria-labelledby="suggestion-title" hidden>
+          <div class="suggestion-heading">
+            <div>
+              <p class="section-kicker">THỬ NHANH</p>
+              <h3 id="suggestion-title">Đoạn code gợi ý</h3>
+              <p id="suggestion-description">Chọn một mẫu để sao chép hoặc áp dụng vào editor.</p>
+            </div>
+            <span class="suggestion-tip">Các đoạn code sẽ được format tự động</span>
+          </div>
+          <div id="suggestion-list" class="suggestion-grid"></div>
+        </section>
       </div>
     </dialog>
+
+    <template id="quick-action-template">
+      <button class="quick-action-button" type="button">
+        <span class="quick-action-label"></span>
+        <code class="quick-action-code"></code>
+        <span class="quick-action-description"></span>
+      </button>
+    </template>
+
+    <template id="suggestion-template">
+      <article class="suggestion-card">
+        <div class="suggestion-card-header">
+          <div>
+            <span class="suggestion-number"></span>
+            <h4 class="suggestion-name"></h4>
+          </div>
+          <span class="suggestion-language">HTML</span>
+        </div>
+        <pre><code class="suggestion-code"></code></pre>
+        <div class="suggestion-actions">
+          <button class="suggestion-copy secondary-button" type="button">Sao chép</button>
+          <button class="suggestion-paste primary-button" type="button">Dán vào HTML →</button>
+        </div>
+      </article>
+    </template>
 
     <template id="card-template">
       <article class="cheat-card">
