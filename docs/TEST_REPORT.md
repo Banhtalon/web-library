@@ -46,7 +46,7 @@ Bộ E2E chạy trên trình duyệt thật và hiện có 8 test:
 
 1. Tìm kiếm tiếng Việt không dấu: `can giua` trả về `display: flex`.
 2. Lọc catalog theo HTML, CSS và JavaScript với số lượng đúng.
-3. Mở dialog từ card, cập nhật URL hash và đóng dialog sạchly.
+3. Mở dialog từ card, cập nhật URL hash và đóng dialog đúng cách.
 4. Mở trực tiếp chủ đề bằng URL hash.
 5. Chuyển giữa ba tab editor HTML/CSS/JavaScript.
 6. Sửa `display` trong CSS, chạy lại preview và reset về code ban đầu.
