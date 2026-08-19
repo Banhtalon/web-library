@@ -9,7 +9,7 @@ function escapeClosingTag(code, tagName) {
   return code.replace(pattern, `<\\/${tagName}`);
 }
 
-function buildPreviewDocument({ html, css, javascript }) {
+export function buildPreviewDocument({ html, css, javascript }) {
   const safeCss = escapeClosingTag(css, "style");
   const safeJavaScript = escapeClosingTag(javascript, "script");
 
@@ -84,6 +84,8 @@ export function createPlayground() {
   let originalCode = { html: "", css: "", javascript: "" };
   let activeEditor = "html";
   let statusTimer;
+  let previewUrl = "";
+  let renderVersion = 0;
 
   function setStatus(message) {
     window.clearTimeout(statusTimer);
@@ -102,9 +104,34 @@ export function createPlayground() {
     };
   }
 
+  function renderPreview(previewDocument) {
+    const nextPreviewUrl = URL.createObjectURL(
+      new Blob([previewDocument], { type: "text/html;charset=utf-8" })
+    );
+    const previousPreviewUrl = previewUrl;
+
+    previewUrl = nextPreviewUrl;
+    frame.removeAttribute("srcdoc");
+    frame.src = nextPreviewUrl;
+
+    if (previousPreviewUrl) {
+      URL.revokeObjectURL(previousPreviewUrl);
+    }
+  }
+
   function run() {
-    frame.srcdoc = buildPreviewDocument(getCurrentCode());
-    setStatus("Đã cập nhật kết quả");
+    const previewDocument = buildPreviewDocument(getCurrentCode());
+    const currentRender = ++renderVersion;
+
+    setStatus("Đang cập nhật kết quả...");
+
+    // Chờ đến frame kế tiếp để dialog kịp hiển thị trước khi nạp iframe.
+    // Cách này tránh trường hợp iframe trắng trên một số trình duyệt khi
+    // src được gán lúc <dialog> vẫn đang đóng.
+    window.requestAnimationFrame(() => {
+      if (currentRender !== renderVersion) return;
+      renderPreview(previewDocument);
+    });
   }
 
   function selectEditor(language) {
@@ -162,6 +189,10 @@ export function createPlayground() {
     }
   }
 
+  frame.addEventListener("load", () => {
+    setStatus("Đã cập nhật kết quả");
+  });
+
   tabButtons.forEach((button) => {
     button.addEventListener("click", () => selectEditor(button.dataset.editor));
   });
@@ -180,6 +211,10 @@ export function createPlayground() {
         run();
       }
     });
+  });
+
+  window.addEventListener("beforeunload", () => {
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
   });
 
   runButton.addEventListener("click", run);
