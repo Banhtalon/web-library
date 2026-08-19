@@ -22,51 +22,77 @@ export const cheats = [
       "Chọn thẻ heading chỉ vì kích thước chữ. Kích thước nên chỉnh bằng CSS, cấp độ heading dùng để thể hiện cấu trúc.",
     exercise:
       "Đổi tiêu đề phụ từ h2 thành h3 và thêm một đoạn p giới thiệu sở thích của em.",
-    htmlCode: `<article class="lesson-card">
-  <p class="label">HỒ SƠ HỌC SINH</p>
+    focusTokens: {
+      html: ["h1", "h2", "h3", "h4", "h5", "h6", "p"]
+    },
+    suggestions: [
+      {
+        title: "H1 kết hợp H3",
+        language: "html",
+        code: `<h1>Xin chào, mình là Minh</h1>
+<h3>Mình đang học lập trình web</h3>`
+      },
+      {
+        title: "H1 kết hợp H5",
+        language: "html",
+        code: `<h1>Xin chào, mình là Minh</h1>
+<h5>Mình đang học lập trình web</h5>`
+      },
+      {
+        title: "H2 kết hợp H3",
+        language: "html",
+        code: `<h2>Xin chào, mình là Minh</h2>
+<h3>Mình đang học lập trình web</h3>`
+      }
+    ],
+    htmlCode: `<main class="profile-card">
   <h1>Xin chào, mình là Minh</h1>
   <h2>Mình đang học lập trình web</h2>
   <p>
-    Mục tiêu của mình là tự xây dựng một website
-    giới thiệu bản thân bằng HTML và CSS.
+    Mục tiêu của mình là tự xây dựng một website giới thiệu bản thân bằng HTML và CSS.
   </p>
-</article>`,
+</main>`,
     cssCode: `body {
   margin: 0;
-  padding: 32px;
-  background: #f4f7fb;
+  padding: 48px;
+  background: #f3f6fb;
   color: #172033;
   font-family: Arial, sans-serif;
 }
 
-.lesson-card {
-  max-width: 560px;
-  margin: 20px auto;
-  padding: 28px;
+.profile-card {
+  max-width: 620px;
+  margin: 32px auto;
+  padding: 36px;
   border: 1px solid #dce2eb;
-  border-radius: 16px;
+  border-radius: 18px;
   background: white;
+  box-shadow: 0 16px 40px rgba(23, 32, 51, 0.08);
 }
 
-.label {
-  color: #3056d3;
-  font-size: 12px;
-  font-weight: bold;
-  letter-spacing: 1.5px;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0 0 14px;
 }
 
 h1 {
-  margin: 10px 0;
-  font-size: 36px;
+  font-size: 38px;
 }
 
 h2 {
   color: #586174;
-  font-size: 20px;
+  font-size: 23px;
 }
 
-.lesson-card > p:last-child {
-  line-height: 1.7;
+p {
+  margin: 22px 0 0;
+  color: #42506a;
+  font-size: 17px;
+  line-height: 1.75;
 }`,
     jsCode: `// Ví dụ HTML này chưa cần JavaScript.`
   },
@@ -304,6 +330,139 @@ control.addEventListener("input", function () {
   box.style.padding = padding;
   valueText.textContent = padding;
 });`
+  },
+  {
+    id: "css-display",
+    language: "css",
+    category: "Layout",
+    title: "display",
+    description:
+      "So sánh trực quan cách block, inline, inline-block và none thay đổi cách phần tử chiếm không gian.",
+    difficulty: "Cơ bản",
+    tags: ["display", "block", "inline"],
+    aliases: [
+      "display css",
+      "block inline",
+      "inline block",
+      "ẩn phần tử",
+      "an phan tu",
+      "cách hiển thị",
+      "cach hien thi"
+    ],
+    focusTokens: {
+      css: ["display", "block", "inline", "inline-block", "none"]
+    },
+    quickActions: [
+      {
+        label: "Block",
+        value: "block",
+        description: "Mỗi phần tử bắt đầu ở một dòng mới và giữ width/height.",
+        patch: { selector: ".item", property: "display", value: "block" }
+      },
+      {
+        label: "Inline",
+        value: "inline",
+        description: "Các phần tử nằm cùng dòng; width/height không còn tác dụng như block.",
+        patch: { selector: ".item", property: "display", value: "inline" }
+      },
+      {
+        label: "Inline-block",
+        value: "inline-block",
+        description: "Nằm cùng dòng nhưng vẫn giữ width và height.",
+        patch: { selector: ".item", property: "display", value: "inline-block" }
+      },
+      {
+        label: "None",
+        value: "none",
+        description: "Ẩn phần tử và loại nó khỏi bố cục.",
+        patch: { selector: ".item", property: "display", value: "none" }
+      }
+    ],
+    suggestions: [
+      {
+        title: "Block",
+        language: "css",
+        code: `.item {
+  display: block;
+}`,
+        patch: { selector: ".item", property: "display", value: "block" }
+      },
+      {
+        title: "Inline",
+        language: "css",
+        code: `.item {
+  display: inline;
+}`,
+        patch: { selector: ".item", property: "display", value: "inline" }
+      },
+      {
+        title: "Inline-block",
+        language: "css",
+        code: `.item {
+  display: inline-block;
+}`,
+        patch: { selector: ".item", property: "display", value: "inline-block" }
+      },
+      {
+        title: "Ẩn bằng none",
+        language: "css",
+        code: `.item {
+  display: none;
+}`,
+        patch: { selector: ".item", property: "display", value: "none" }
+      }
+    ],
+    htmlCode: `<main class="display-demo">
+  <section class="display-stage" aria-label="Khu vực minh họa display">
+    <div class="item">A</div>
+    <div class="item">B</div>
+    <div class="item">C</div>
+  </section>
+</main>`,
+    cssCode: `* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 36px;
+  color: #172033;
+  background: #f4f7fb;
+  font-family: Arial, sans-serif;
+}
+
+.display-demo {
+  max-width: 760px;
+  margin: auto;
+}
+
+.display-stage {
+  min-height: 330px;
+  padding: 24px;
+  border: 2px dashed #9eabc0;
+  border-radius: 16px;
+  background:
+    linear-gradient(#eef2f8 1px, transparent 1px),
+    linear-gradient(90deg, #eef2f8 1px, transparent 1px),
+    white;
+  background-size: 24px 24px;
+}
+
+.item {
+  display: block;
+  width: 110px;
+  height: 70px;
+  margin: 8px;
+  padding: 22px 12px;
+  border-radius: 12px;
+  color: white;
+  background: #3056d3;
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+}`,
+    jsCode: `// Không cần JavaScript cho demo này.
+// Chỉ cần đổi giá trị display trong CSS để xem bố cục thay đổi.`
   },
   {
     id: "css-flexbox",
