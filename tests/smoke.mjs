@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { cheats } from "../data/cheats.js";
 import { normalizeText, searchCheats } from "../js/search.js";
 
-assert.equal(cheats.length, 6, "Prototype phải có đúng 6 chủ đề đại diện");
+assert.equal(cheats.length, 7, "Prototype hiện có đúng 7 chủ đề đại diện");
 assert.equal(new Set(cheats.map((item) => item.id)).size, cheats.length, "id phải duy nhất");
 
 for (const item of cheats) {
@@ -14,13 +14,26 @@ for (const item of cheats) {
   assert.equal(typeof item.htmlCode, "string");
   assert.equal(typeof item.cssCode, "string");
   assert.equal(typeof item.jsCode, "string");
+
+  for (const suggestion of item.suggestions ?? []) {
+    assert.ok(suggestion.title, `${item.id}: suggestion thiếu title`);
+    assert.ok(suggestion.language, `${item.id}: suggestion thiếu language`);
+    assert.equal(typeof suggestion.code, "string", `${item.id}: suggestion code không hợp lệ`);
+  }
+
+  for (const action of item.quickActions ?? []) {
+    assert.ok(action.label && action.description && action.patch, `${item.id}: quick action không hợp lệ`);
+    assert.ok(action.patch.selector && action.patch.property && action.patch.value != null);
+  }
 }
 
 assert.equal(normalizeText("Căn giữa"), "can giua");
 assert.equal(searchCheats(cheats, { query: "can giua" })[0].id, "css-flexbox");
 assert.equal(searchCheats(cheats, { query: "bấm nút" })[0].id, "js-dom-click-event");
 assert.equal(searchCheats(cheats, { language: "html" }).length, 2);
-assert.equal(searchCheats(cheats, { language: "css" }).length, 2);
+assert.equal(searchCheats(cheats, { language: "css" }).length, 3);
 assert.equal(searchCheats(cheats, { language: "javascript" }).length, 2);
+assert.equal(cheats.filter((item) => item.id === "css-display").length, 1);
+assert.equal(cheats.filter((item) => item.id === "css-flexbox").length, 1);
 
-console.log("PASS: dữ liệu, id, tìm kiếm không dấu và bộ lọc ngôn ngữ");
+console.log("PASS: 7 chủ đề, id/schema, tìm kiếm, bộ lọc và display/flex không trùng");
