@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Prototype cheatsheet HTML, CSS và JavaScript có tìm kiếm, ví dụ trực quan và playground tương tác."
+    />
+    <title>WebBlocks — HTML CSS JS Cheatsheet</title>
+    <link rel="stylesheet" href="./css/styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#cheat-list">Bỏ qua đến danh sách nội dung</a>
+
+    <header class="site-header">
+      <div class="container header-row">
+        <a class="brand" href="#" aria-label="Về trang chủ WebBlocks">
+          <span class="brand-mark" aria-hidden="true">&lt;/&gt;</span>
+          <span>
+            <strong>WebBlocks</strong>
+            <small>HTML · CSS · JavaScript</small>
+          </span>
+        </a>
+
+        <div class="search-wrap">
+          <label class="sr-only" for="search-input">Tìm kiếm nội dung</label>
+          <span class="search-icon" aria-hidden="true">⌕</span>
+          <input
+            id="search-input"
+            type="search"
+            autocomplete="off"
+            placeholder="Tìm flex, form, vòng lặp, click..."
+          />
+          <kbd>/</kbd>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero container" aria-labelledby="page-title">
+        <div>
+          <p class="eyebrow">PROTOTYPE · GIAI ĐOẠN 0</p>
+          <h1 id="page-title">Tra cứu nhanh. Sửa code. Xem kết quả ngay.</h1>
+          <p class="hero-copy">
+            Sáu chủ đề đại diện dùng để kiểm chứng cấu trúc dữ liệu, tìm kiếm và
+            playground chạy code an toàn trong iframe.
+          </p>
+        </div>
+        <div class="hero-stats" aria-label="Thống kê prototype">
+          <div><strong id="total-count">6</strong><span>chủ đề mẫu</span></div>
+          <div><strong>3</strong><span>ngôn ngữ</span></div>
+          <div><strong>1</strong><span>playground</span></div>
+        </div>
+      </section>
+
+      <section class="catalog container" aria-labelledby="catalog-title">
+        <div class="catalog-toolbar">
+          <div>
+            <p class="section-kicker">THƯ VIỆN</p>
+            <h2 id="catalog-title">Khối lệnh cơ bản</h2>
+          </div>
+
+          <div class="filters" role="group" aria-label="Lọc theo ngôn ngữ">
+            <button class="filter-button is-active" type="button" data-language="all">
+              Tất cả <span data-filter-count="all">6</span>
+            </button>
+            <button class="filter-button" type="button" data-language="html">
+              HTML <span data-filter-count="html">2</span>
+            </button>
+            <button class="filter-button" type="button" data-language="css">
+              CSS <span data-filter-count="css">2</span>
+            </button>
+            <button class="filter-button" type="button" data-language="javascript">
+              JavaScript <span data-filter-count="javascript">2</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="result-bar" aria-live="polite">
+          <p id="result-summary">Đang hiển thị 6 chủ đề</p>
+          <button id="clear-search" class="text-button" type="button" hidden>
+            Xóa tìm kiếm
+          </button>
+        </div>
+
+        <div id="cheat-list" class="cheat-grid"></div>
+
+        <div id="empty-state" class="empty-state" hidden>
+          <div class="empty-icon" aria-hidden="true">?</div>
+          <h3>Chưa tìm thấy nội dung phù hợp</h3>
+          <p>Thử từ khóa ngắn hơn như “flex”, “form”, “if” hoặc “click”.</p>
+          <button id="empty-reset" class="primary-button" type="button">
+            Hiển thị tất cả
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-row">
+        <p>WebBlocks · Prototype học tập tương tác</p>
+        <p>HTML, CSS và JavaScript thuần</p>
+      </div>
+    </footer>
+
+    <dialog id="detail-dialog" class="detail-dialog">
+      <div class="dialog-shell">
+        <header class="dialog-header">
+          <div>
+            <div class="dialog-meta">
+              <span id="detail-language" class="language-badge">CSS</span>
+              <span id="detail-category" class="category-label">Layout</span>
+              <span id="detail-level" class="level-label">Cơ bản</span>
+            </div>
+            <h2 id="detail-title">display: flex</h2>
+            <p id="detail-description"></p>
+          </div>
+          <button id="close-dialog" class="icon-button" type="button" aria-label="Đóng">
+            ×
+          </button>
+        </header>
+
+        <div class="learning-strip">
+          <article class="learning-card note-card">
+            <span>Ghi nhớ</span>
+            <p id="detail-note"></p>
+          </article>
+          <article class="learning-card mistake-card">
+            <span>Lỗi thường gặp</span>
+            <p id="detail-mistake"></p>
+          </article>
+          <article class="learning-card exercise-card">
+            <span>Thử thách nhỏ</span>
+            <p id="detail-exercise"></p>
+          </article>
+        </div>
+
+        <section class="playground" aria-label="Khu vực chạy thử code">
+          <div class="editor-panel">
+            <div class="panel-header">
+              <div class="editor-tabs" role="tablist" aria-label="Chọn loại code">
+                <button
+                  class="editor-tab is-active"
+                  type="button"
+                  role="tab"
+                  aria-selected="true"
+                  data-editor="html"
+                >
+                  HTML
+                </button>
+                <button
+                  class="editor-tab"
+                  type="button"
+                  role="tab"
+                  aria-selected="false"
+                  data-editor="css"
+                >
+                  CSS
+                </button>
+                <button
+                  class="editor-tab"
+                  type="button"
+                  role="tab"
+                  aria-selected="false"
+                  data-editor="javascript"
+                >
+                  JavaScript
+                </button>
+              </div>
+              <span id="editor-label" class="panel-label">index.html</span>
+            </div>
+
+            <div class="editor-stack">
+              <label class="sr-only" for="html-editor">Mã HTML</label>
+              <textarea
+                id="html-editor"
+                class="code-editor is-active"
+                data-code-editor="html"
+                spellcheck="false"
+              ></textarea>
+
+              <label class="sr-only" for="css-editor">Mã CSS</label>
+              <textarea
+                id="css-editor"
+                class="code-editor"
+                data-code-editor="css"
+                spellcheck="false"
+                hidden
+              ></textarea>
+
+              <label class="sr-only" for="js-editor">Mã JavaScript</label>
+              <textarea
+                id="js-editor"
+                class="code-editor"
+                data-code-editor="javascript"
+                spellcheck="false"
+                hidden
+              ></textarea>
+            </div>
+
+            <div class="editor-actions">
+              <button id="run-code" class="primary-button" type="button">
+                ▶ Chạy code
+              </button>
+              <button id="reset-code" class="secondary-button" type="button">
+                Đặt lại
+              </button>
+              <button id="copy-code" class="secondary-button" type="button">
+                Sao chép tab hiện tại
+              </button>
+              <span id="action-status" class="action-status" aria-live="polite"></span>
+            </div>
+          </div>
+
+          <div class="preview-panel">
+            <div class="panel-header">
+              <div class="preview-title">
+                <span class="status-dot" aria-hidden="true"></span>
+                <strong>Kết quả</strong>
+              </div>
+              <span class="panel-label">sandbox iframe</span>
+            </div>
+            <iframe
+              id="preview-frame"
+              title="Kết quả chạy thử code"
+              sandbox="allow-scripts"
+            ></iframe>
+          </div>
+        </section>
+      </div>
+    </dialog>
+
+    <template id="card-template">
+      <article class="cheat-card">
+        <div class="card-topline">
+          <span class="language-badge card-language"></span>
+          <span class="card-level"></span>
+        </div>
+        <div class="card-content">
+          <p class="card-category"></p>
+          <h3 class="card-title"></h3>
+          <p class="card-description"></p>
+        </div>
+        <div class="card-footer">
+          <div class="tag-list"></div>
+          <button class="open-card-button" type="button">
+            Xem ví dụ <span aria-hidden="true">→</span>
+          </button>
+        </div>
+      </article>
+    </template>
+
+    <script type="module" src="./js/app.js"></script>
+  </body>
+</html>
