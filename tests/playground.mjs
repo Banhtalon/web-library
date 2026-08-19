@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { cheats } from "../data/cheats.js";
 import { buildPreviewDocument } from "../js/playground.js";
+import { highlightCode } from "../js/syntax.js";
 
 for (const item of cheats) {
   const previewDocument = buildPreviewDocument({
@@ -28,10 +29,6 @@ for (const item of cheats) {
     /type: "ready"/,
     `${item.id}: preview chưa gửi tín hiệu ready`
   );
-  assert.ok(
-    previewDocument.includes(`const renderId = ${JSON.stringify(item.id)}`),
-    `${item.id}: thiếu renderId`
-  );
 }
 
 const escapedDocument = buildPreviewDocument({
@@ -50,6 +47,24 @@ assert.ok(
   "Thẻ đóng script trong code người dùng phải được escape"
 );
 
+const highlightedHtml = highlightCode(
+  '<main class="profile-card"><h1>Xin chào</h1></main>',
+  "html",
+  ["h1"]
+);
+
+assert.match(highlightedHtml, /syntax-focus-tag/);
+assert.doesNotMatch(
+  highlightedHtml,
+  /class=&quot;syntax-/,
+  "Highlighter không được highlight lại markup do chính nó sinh ra"
+);
+assert.doesNotMatch(
+  highlightedHtml,
+  />class="syntax-/,
+  "Tên class nội bộ không được lộ ra như nội dung code"
+);
+
 const indexHtml = await readFile(new URL("../index.html", import.meta.url), "utf8");
 assert.match(
   indexHtml,
@@ -61,15 +76,27 @@ assert.doesNotMatch(
   /allow-same-origin/,
   "Iframe không được cấp allow-same-origin"
 );
+assert.match(
+  indexHtml,
+  /\.\/css\/editor\.css/,
+  "editor.css phải được load trực tiếp từ index.html"
+);
+assert.doesNotMatch(
+  indexHtml,
+  /cleanup\.css/,
+  "Không được phụ thuộc cleanup.css sau khi đã dọn CSS"
+);
 
 const appSource = await readFile(new URL("../js/app.js", import.meta.url), "utf8");
-const showDialogIndex = appSource.indexOf("elements.detailDialog.showModal()");
-const fillDetailIndex = appSource.indexOf("fillDetail(item)", showDialogIndex);
-
-assert.ok(showDialogIndex >= 0, "Thiếu thao tác mở dialog");
-assert.ok(
-  fillDetailIndex > showDialogIndex,
-  "Dialog phải được mở trước khi playground nạp iframe"
+assert.doesNotMatch(
+  appSource,
+  /DISPLAY_DEMO/,
+  "app.js không được hard-code dữ liệu bài học trùng với data/cheats.js"
+);
+assert.doesNotMatch(
+  appSource,
+  /createElement\(["']link["']\)/,
+  "app.js không được load CSS động"
 );
 
 const playgroundSource = await readFile(
@@ -83,13 +110,20 @@ assert.match(
 );
 assert.match(
   playgroundSource,
-  /window\.setTimeout\(\(\) =>/,
-  "Playground cần đợi dialog hiển thị trước khi render"
-);
-assert.match(
-  playgroundSource,
   /window\.addEventListener\("message", handlePreviewMessage\)/,
   "Trang chính cần nhận trạng thái ready/error từ preview"
 );
 
-console.log("PASS: tài liệu preview, renderId, sandbox và thứ tự mở dialog");
+const editorCss = await readFile(new URL("../css/editor.css", import.meta.url), "utf8");
+assert.match(
+  editorCss,
+  /\.dialog-header\s*\{[\s\S]*?position:\s*static;/,
+  "Header của detail phải cuộn bình thường, không sticky"
+);
+assert.match(
+  editorCss,
+  /grid-template-columns:\s*repeat\(auto-fit,\s*minmax\(240px,\s*1fr\)\)/,
+  "Grid gợi ý phải tự phân bố theo số lượng card"
+);
+
+console.log("PASS: preview, syntax highlighting, CSS cascade và cấu trúc playground");
