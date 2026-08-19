@@ -1,8 +1,15 @@
 # Báo cáo kiểm thử Giai đoạn 0
 
-## Kiểm thử tự động hiện có
+## Tổng quan
 
-Bộ test hiện tại chạy bằng Node.js qua `npm test`, gồm smoke test và regression test cho dữ liệu, search, playground và syntax highlighting.
+WebBlocks hiện có hai lớp kiểm thử tự động:
+
+1. Smoke/regression test chạy bằng Node.js qua `npm test`.
+2. Browser E2E test chạy bằng Playwright qua `npm run test:e2e`.
+
+Cả hai lớp được chạy tự động trong GitHub Actions khi có pull request vào `main` hoặc push lên `main`.
+
+## 1. Smoke và regression test
 
 ### Dữ liệu và tìm kiếm
 
@@ -33,20 +40,57 @@ Bộ test hiện tại chạy bằng Node.js qua `npm test`, gồm smoke test v�
 - `editor.css` được load trực tiếp từ `index.html`.
 - Không còn phụ thuộc vào `cleanup.css`.
 
-## Chưa được kiểm thử E2E tự động
+## 2. Playwright E2E
 
-Các luồng sau hiện mới được kiểm tra thủ công hoặc chưa có browser automation chính thức:
+Bộ E2E chạy trên trình duyệt thật và hiện có 8 test:
 
-- Render card trên trình duyệt thật ở desktop/mobile.
-- Click mở/đóng dialog chi tiết.
-- Điều hướng trực tiếp bằng URL hash.
-- Tương tác nút bên trong sandbox iframe.
-- Sửa CSS rồi xác nhận preview thay đổi bằng browser assertion.
-- Reset code rồi xác nhận preview trở về trạng thái ban đầu.
-- Kiểm tra DOM click bằng thao tác người dùng thực tế.
+1. Tìm kiếm tiếng Việt không dấu: `can giua` trả về `display: flex`.
+2. Lọc catalog theo HTML, CSS và JavaScript với số lượng đúng.
+3. Mở dialog từ card, cập nhật URL hash và đóng dialog sạchly.
+4. Mở trực tiếp chủ đề bằng URL hash.
+5. Chuyển giữa ba tab editor HTML/CSS/JavaScript.
+6. Sửa `display` trong CSS, chạy lại preview và reset về code ban đầu.
+7. Gây lỗi JavaScript và xác nhận lỗi xuất hiện trong sandbox preview.
+8. Kiểm tra catalog và dialog ở viewport mobile 390×844.
 
-Các luồng này sẽ được bổ sung bằng Playwright ở bước kiểm thử E2E.
+Các test thay đổi preview có cơ chế chờ iframe reload trước khi assertion để tránh race condition khi `srcdoc` được cập nhật.
 
-## Kết quả hiện tại
+## 3. GitHub Actions CI
 
-Bộ smoke/regression test hiện tại đạt theo phạm vi kiểm tra nói trên.
+Workflow: `.github/workflows/ci.yml`.
+
+Môi trường kiểm thử hiện tại:
+
+- GitHub-hosted runner: Ubuntu 24.04.
+- `actions/checkout@v7`.
+- `actions/setup-node@v7`.
+- Node.js 24.
+- Playwright chạy bằng Google Chrome có sẵn trên runner.
+- Quyền `GITHUB_TOKEN` giới hạn ở `contents: read`.
+
+Thứ tự quality gate:
+
+```text
+npm install
+→ npm test
+→ npm run test:e2e
+```
+
+Nếu Playwright thất bại, workflow upload `playwright-report/` và `test-results/` thành artifact trong 7 ngày để phục vụ debug.
+
+## 4. Kết quả xác minh trên GitHub Actions
+
+Run cuối đã xác minh thành công:
+
+- Workflow run: `32280777875`.
+- Smoke/regression: PASS.
+- Playwright E2E: **8/8 PASS**.
+- Thời gian Playwright trong run cuối: khoảng **11.8 giây**.
+- `npm install`: 0 vulnerabilities được báo cáo trong run.
+- Failure artifact step được skip đúng vì toàn bộ test đều đạt.
+
+Trước khi đạt trạng thái xanh, E2E đã phát hiện hai vấn đề trong chính bài test: một race condition khi iframe reload và một assertion vượt quá hành vi UI thực tế. Hai test đã được chỉnh để đồng bộ với vòng đời iframe và kiểm tra đúng hành vi sản phẩm; không cần thay đổi logic ứng dụng.
+
+## Kết luận
+
+Quality gate của Giai đoạn 0 hiện đã hoạt động đầy đủ: kiểm tra cấu trúc/dữ liệu bằng Node.js và kiểm tra luồng người dùng chính bằng trình duyệt thật. Trạng thái CI cuối cùng trên branch kiểm thử là PASS.
