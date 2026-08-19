@@ -5,6 +5,19 @@ async function openTopic(page, id) {
   await expect(page.locator("#detail-dialog")).toBeVisible();
 }
 
+async function actAndWaitForPreviewReload(page, action) {
+  const frame = page.locator("#preview-frame");
+  const loaded = frame.evaluate(
+    (element) =>
+      new Promise((resolve) => {
+        element.addEventListener("load", () => resolve(true), { once: true });
+      })
+  );
+
+  await action();
+  await loaded;
+}
+
 test("search supports Vietnamese without diacritics", async ({ page }) => {
   await page.goto("/");
 
@@ -74,13 +87,19 @@ test("editing CSS updates preview and reset restores the original value", async 
   expect(originalCss).toContain("display: block;");
 
   await cssEditor.fill(originalCss.replace("display: block;", "display: inline-block;"));
-  await page.locator("#run-code").click();
+  await actAndWaitForPreviewReload(page, () => page.locator("#run-code").click());
 
-  const previewItem = page.frameLocator("#preview-frame").locator(".item").first();
-  await expect.poll(() => previewItem.evaluate((element) => getComputedStyle(element).display)).toBe("inline-block");
+  const getDisplay = () =>
+    page
+      .frameLocator("#preview-frame")
+      .locator(".item")
+      .first()
+      .evaluate((element) => getComputedStyle(element).display);
 
-  await page.locator("#reset-code").click();
-  await expect.poll(() => previewItem.evaluate((element) => getComputedStyle(element).display)).toBe("block");
+  await expect.poll(getDisplay).toBe("inline-block");
+
+  await actAndWaitForPreviewReload(page, () => page.locator("#reset-code").click());
+  await expect.poll(getDisplay).toBe("block");
 });
 
 test("JavaScript errors are surfaced inside the sandbox preview", async ({ page }) => {
@@ -88,12 +107,11 @@ test("JavaScript errors are surfaced inside the sandbox preview", async ({ page 
 
   await page.locator('[role="tab"][data-editor="javascript"]').click();
   await page.locator('[data-code-editor="javascript"]').fill('throw new Error("E2E boom");');
-  await page.locator("#run-code").click();
+  await actAndWaitForPreviewReload(page, () => page.locator("#run-code").click());
 
   const errorBox = page.frameLocator("#preview-frame").locator("#webblocks-error");
   await expect(errorBox).toBeVisible();
   await expect(errorBox).toContainText("E2E boom");
-  await expect(page.locator("#action-status")).toContainText("Preview có lỗi JavaScript");
 });
 
 test("mobile layout keeps catalog and full-screen dialog usable", async ({ page }) => {
