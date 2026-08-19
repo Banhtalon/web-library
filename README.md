@@ -20,21 +20,20 @@ Prototype website cheatsheet HTML, CSS và JavaScript bằng công nghệ thuầ
 - Responsive cho desktop và mobile.
 - Hiển thị lỗi JavaScript ngay trong khu vực preview.
 
-## Chạy dự án
+## Tải và chạy dự án
 
 Dự án dùng ES modules nên cần mở qua local server, không mở trực tiếp bằng `file://`.
 
-### Cách 1 — npm script
-
 ```bash
-cd html-css-js-cheatsheet-phase0
+git clone https://github.com/Banhtalon/web-library.git
+cd web-library
 npm run serve
 ```
 
-### Cách 2 — Python
+Hoặc không dùng npm:
 
 ```bash
-cd html-css-js-cheatsheet-phase0
+cd web-library
 python3 -m http.server 5500
 ```
 
@@ -46,7 +45,7 @@ http://localhost:5500
 
 Dự án không cần cài package JavaScript nào.
 
-## Chạy kiểm thử dữ liệu và tìm kiếm
+## Chạy kiểm thử
 
 ```bash
 npm test
@@ -63,7 +62,7 @@ Bài kiểm thử xác nhận:
 ## Cấu trúc thư mục
 
 ```text
-html-css-js-cheatsheet-phase0/
+web-library/
 ├── index.html
 ├── package.json
 ├── README.md
