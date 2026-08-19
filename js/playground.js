@@ -6,7 +6,7 @@ const FILE_LABELS = {
 
 function escapeClosingTag(code, tagName) {
   const pattern = new RegExp(`</${tagName}`, "gi");
-  return code.replace(pattern, `<\/${tagName}`);
+  return code.replace(pattern, `<\\/${tagName}`);
 }
 
 function buildPreviewDocument({ html, css, javascript }) {
