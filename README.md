@@ -19,6 +19,8 @@ Prototype website cheatsheet HTML, CSS và JavaScript bằng công nghệ thuầ
 - URL trực tiếp theo dạng `#css-flexbox` hoặc `#js-dom-click-event`.
 - Responsive cho desktop và mobile.
 - Hiển thị lỗi JavaScript ngay trong khu vực preview.
+- Playwright E2E kiểm tra các luồng chính trên trình duyệt thật.
+- GitHub Actions tự động chạy smoke/regression và E2E trên pull request vào `main` và khi push lên `main`.
 
 ## Tải và chạy dự án
 
@@ -27,10 +29,11 @@ Dự án dùng ES modules nên cần mở qua local server, không mở trực t
 ```bash
 git clone https://github.com/Banhtalon/web-library.git
 cd web-library
+npm install
 npm run serve
 ```
 
-Hoặc không dùng npm:
+Hoặc chỉ chạy web bằng Python:
 
 ```bash
 cd web-library
@@ -43,15 +46,17 @@ Sau đó truy cập:
 http://localhost:5500
 ```
 
-Ở Giai đoạn 0, phần ứng dụng không cần package JavaScript runtime bên ngoài.
+Phần ứng dụng không cần package JavaScript runtime bên ngoài; dependency npm hiện dùng cho kiểm thử E2E.
 
 ## Chạy kiểm thử
+
+### Smoke và regression
 
 ```bash
 npm test
 ```
 
-Bộ test hiện tại là smoke/regression test chạy bằng Node.js. Các kiểm tra chính gồm:
+Các kiểm tra chính gồm:
 
 - Có đúng bảy chủ đề mẫu và mỗi `id` là duy nhất.
 - Schema dữ liệu bắt buộc tồn tại.
@@ -63,14 +68,58 @@ Bộ test hiện tại là smoke/regression test chạy bằng Node.js. Các ki�
 - Syntax highlighting không làm lộ markup nội bộ.
 - Playground nhận trạng thái `ready/error` từ iframe.
 
-> Kiểm thử trình duyệt E2E cho các thao tác click, responsive và tương tác iframe chưa nằm trong Giai đoạn 0.
+### Playwright E2E
+
+Cài browser Playwright khi chạy E2E lần đầu ở máy cá nhân:
+
+```bash
+npx playwright install chromium
+```
+
+Sau đó chạy:
+
+```bash
+npm run test:e2e
+```
+
+Bộ E2E hiện kiểm tra 8 luồng:
+
+1. Tìm kiếm tiếng Việt không dấu.
+2. Bộ lọc HTML/CSS/JavaScript.
+3. Mở/đóng dialog và cập nhật URL hash.
+4. Mở trực tiếp chủ đề từ URL hash.
+5. Chuyển tab editor HTML/CSS/JavaScript.
+6. Sửa CSS, chạy preview và reset code.
+7. Hiển thị lỗi JavaScript bên trong sandbox preview.
+8. Khả năng sử dụng catalog/dialog ở viewport mobile.
+
+## GitHub Actions CI
+
+Workflow `.github/workflows/ci.yml` chạy tự động khi:
+
+- Có pull request vào `main`.
+- Có push lên `main`.
+
+Quality gate chạy theo thứ tự:
+
+```text
+npm install
+→ npm test
+→ npm run test:e2e
+```
+
+CI dùng Node.js 24 và Google Chrome có sẵn trên GitHub-hosted runner. Nếu E2E thất bại, Playwright report và test results được upload thành artifact để phục vụ debug.
 
 ## Cấu trúc thư mục
 
 ```text
 web-library/
+├── .github/
+│   └── workflows/
+│       └── ci.yml
 ├── index.html
 ├── package.json
+├── playwright.config.mjs
 ├── README.md
 ├── css/
 │   ├── styles.css
@@ -83,6 +132,8 @@ web-library/
 │   ├── search.js
 │   └── syntax.js
 ├── tests/
+│   ├── e2e/
+│   │   └── webblocks.spec.mjs
 │   ├── smoke.mjs
 │   └── playground.mjs
 └── docs/
