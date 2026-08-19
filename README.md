@@ -12,7 +12,7 @@ Prototype website cheatsheet HTML, CSS và JavaScript bằng công nghệ thuầ
 - Tìm kiếm được cả `căn giữa`, `can giua`, `click`, `bấm nút`...
 - Lọc theo HTML, CSS và JavaScript.
 - Card được render tự động từ `data/cheats.js`.
-- Dữ liệu bài học hỗ trợ ghi nhớ, lỗi thường gặp, thử thách, quick actions và code gợi ý.
+- Hỗ trợ quick actions và các đoạn code gợi ý ở những chủ đề phù hợp.
 - Ba editor HTML/CSS/JavaScript có syntax highlighting.
 - Chạy code, format, đặt lại và sao chép tab hiện tại.
 - Preview tương tác thật trong sandbox iframe.
@@ -63,7 +63,7 @@ Bộ test hiện tại là smoke/regression test chạy bằng Node.js. Các ki�
 - Syntax highlighting không làm lộ markup nội bộ.
 - Playground nhận trạng thái `ready/error` từ iframe.
 
-> Kiểm thử trình duyệt E2E cho các thao tác click, responsive và tương tác iframe sẽ được bổ sung ở bước tiếp theo bằng Playwright.
+> Kiểm thử trình duyệt E2E cho các thao tác click, responsive và tương tác iframe chưa nằm trong Giai đoạn 0.
 
 ## Cấu trúc thư mục
 
@@ -93,14 +93,13 @@ web-library/
 
 Thêm một object mới vào mảng `cheats` trong `data/cheats.js`. Giao diện, bộ lọc và tìm kiếm sẽ tự nhận nội dung mới.
 
-Các trường đang sử dụng:
+Các trường giao diện đang sử dụng:
 
 - `id`: mã duy nhất, đồng thời dùng cho URL hash.
 - `language`: `html`, `css` hoặc `javascript`.
 - `category`: nhóm kiến thức.
 - `title`, `description`, `difficulty`.
 - `tags`, `aliases`: phục vụ tìm kiếm.
-- `note`, `commonMistake`, `exercise`: nội dung hỗ trợ học tập.
 - `focusTokens`: token cần nhấn mạnh trong editor.
 - `quickActions`, `suggestions`: thao tác thử nhanh và mẫu code gợi ý.
 - `htmlCode`, `cssCode`, `jsCode`: mã chạy trong playground.
