@@ -80,17 +80,16 @@ Nếu Playwright thất bại, workflow upload `playwright-report/` và `test-re
 
 ## 4. Kết quả xác minh trên GitHub Actions
 
-Run cuối đã xác minh thành công:
+Quality gate đã được chạy và xác minh thành công trên pull request:
 
-- Workflow run: `32280777875`.
 - Smoke/regression: PASS.
 - Playwright E2E: **8/8 PASS**.
-- Thời gian Playwright trong run cuối: khoảng **11.8 giây**.
-- `npm install`: 0 vulnerabilities được báo cáo trong run.
-- Failure artifact step được skip đúng vì toàn bộ test đều đạt.
+- Một run xác minh với Node.js 24 ghi nhận Playwright hoàn thành trong khoảng **11.8 giây**.
+- `npm install` báo cáo 0 vulnerabilities trong run xác minh.
+- Failure artifact step được skip đúng khi toàn bộ test đều đạt.
 
 Trước khi đạt trạng thái xanh, E2E đã phát hiện hai vấn đề trong chính bài test: một race condition khi iframe reload và một assertion vượt quá hành vi UI thực tế. Hai test đã được chỉnh để đồng bộ với vòng đời iframe và kiểm tra đúng hành vi sản phẩm; không cần thay đổi logic ứng dụng.
 
 ## Kết luận
 
-Quality gate của Giai đoạn 0 hiện đã hoạt động đầy đủ: kiểm tra cấu trúc/dữ liệu bằng Node.js và kiểm tra luồng người dùng chính bằng trình duyệt thật. Trạng thái CI cuối cùng trên branch kiểm thử là PASS.
+Quality gate của Giai đoạn 0 hiện đã hoạt động đầy đủ: kiểm tra cấu trúc/dữ liệu bằng Node.js và kiểm tra luồng người dùng chính bằng trình duyệt thật. Pull request hiện có thể dùng CI làm lớp kiểm tra tự động trước khi merge.
