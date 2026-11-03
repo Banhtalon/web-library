@@ -1,0 +1,9 @@
+{
+  "name": "code-library",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Kho tra cứu Component & Template chuẩn HTML5, CSS3 và JavaScript thuần (không phụ thuộc Bootstrap).",
+  "scripts": {
+    "test": "node tests/validate-library.mjs"
+  }
+}
