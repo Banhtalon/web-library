@@ -3,71 +3,70 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Code Library — Kho tra cứu 25 danh mục Component & Template chuẩn HTML5, CSS3 và JavaScript thuần, không phụ thuộc Bootstrap." />
+  <meta name="description" content="Code Library — Kho tra cứu 25 danh mục Component & Template chuẩn HTML5, CSS3 và JavaScript thuần theo phong cách CodeShikhi." />
   <title>Code Library — Kho Component &amp; Template HTML/CSS/JS Thuần</title>
   <link rel="stylesheet" href="./css/app.css" />
 </head>
 <body>
   <a href="#mainContent" class="skip-link" id="skipToMainLink">Chuyển tới nội dung chính</a>
 
-  <!-- TOP HEADER NAVBAR -->
+  <!-- TOP HEADER NAVBAR (Bố cục chuẩn CodeShikhi) -->
   <header class="topbar" role="banner">
-    <div class="topbar-left">
-      <button type="button" class="icon-btn mobile-menu-btn" id="sidebarToggleBtn" aria-label="Đóng/mở danh mục" aria-expanded="false">
-        ☰
-      </button>
-      <a href="#/" class="brand-link" aria-label="Trang chủ Code Library">
-        <span class="brand-mark">CL</span>
-        <div class="brand-text">
-          <strong>CodeLibrary</strong>
-          <small>Vanilla HTML • CSS • JS</small>
+    <div class="topbar-inner">
+      <div class="topbar-left">
+        <button type="button" class="icon-pill-btn mobile-menu-btn" id="sidebarToggleBtn" aria-label="Đóng/mở danh mục" aria-expanded="false">
+          ☰
+        </button>
+        <a href="#/" class="brand-link" aria-label="Trang chủ Code Library">
+          <span class="brand-mark" aria-hidden="true">❖</span>
+          <span class="brand-name">CodeLibrary</span>
+        </a>
+      </div>
+
+      <nav class="topbar-nav" aria-label="Điều hướng chính">
+        <a href="#/" class="topnav-link" data-nav="home">Home</a>
+        <a href="#/component/header-responsive-command" class="topnav-link" data-nav="components">Components</a>
+        <a href="#/boilerplate" class="topnav-link" data-nav="boilerplate">HTML5 Starter</a>
+      </nav>
+
+      <div class="topbar-right">
+        <div class="topbar-search">
+          <label for="globalSearchInput" class="sr-only">Tìm kiếm component hoặc danh mục</label>
+          <span class="search-icon" aria-hidden="true">🔍</span>
+          <input
+            type="search"
+            id="globalSearchInput"
+            class="search-input"
+            placeholder="Search components... (/)"
+            autocomplete="off"
+          />
         </div>
-      </a>
+        <button type="button" class="theme-pill-btn" id="themeToggleBtn" aria-label="Chuyển đổi giao diện Sáng / Tối">
+          <span id="themeIcon" aria-hidden="true">🌙</span>
+          <span id="themeLabel">Dark</span>
+        </button>
+      </div>
     </div>
-
-    <div class="topbar-search">
-      <label for="globalSearchInput" class="sr-only">Tìm kiếm component hoặc danh mục</label>
-      <span class="search-icon" aria-hidden="true">🔍</span>
-      <input
-        type="search"
-        id="globalSearchInput"
-        class="search-input"
-        placeholder="Tìm kiếm (hỗ trợ không dấu: 'thanh dieu huong', 'bang gia', 'carousel')..."
-        autocomplete="off"
-      />
-      <kbd class="search-kbd" title="Nhấn phím / để tìm nhanh">/</kbd>
-    </div>
-
-    <nav class="topbar-nav" aria-label="Điều hướng chính">
-      <a href="#/" class="topnav-link" data-nav="home">Trang chủ</a>
-      <a href="#/all" class="topnav-link" data-nav="all">Tất cả mẫu (<span id="navTotalCount">25</span>)</a>
-      <a href="#/boilerplate" class="topnav-link" data-nav="boilerplate">Khung HTML5 Chuẩn</a>
-      <button type="button" class="theme-toggle-btn" id="themeToggleBtn" aria-label="Chuyển đổi giao diện Sáng / Tối">
-        <span id="themeIcon" aria-hidden="true">🌙</span>
-        <span id="themeLabel">Tối</span>
-      </button>
-    </nav>
   </header>
 
-  <!-- APP SHELL: SIDEBAR + MAIN WORKSPACE -->
+  <!-- APP SHELL: LEFT FLOATING CATEGORIES TREE + RIGHT CONTENT -->
   <div class="app-shell">
     <div class="sidebar-backdrop" id="sidebarBackdrop" hidden></div>
 
     <aside class="sidebar" id="categorySidebar" aria-label="Danh sách 25 danh mục">
-      <div class="sidebar-header">
-        <div class="sidebar-title-row">
-          <h2>Danh mục (25)</h2>
-          <a href="#/all" class="sidebar-view-all">Xem hết</a>
+      <div class="sidebar-card">
+        <div class="sidebar-header">
+          <span class="sidebar-heading">CATEGORIES</span>
+          <input
+            type="search"
+            id="sidebarFilterInput"
+            class="sidebar-filter-input"
+            placeholder="Lọc nhanh danh mục..."
+            aria-label="Lọc nhanh danh mục ở thanh bên"
+          />
         </div>
-        <input
-          type="search"
-          id="sidebarFilterInput"
-          class="sidebar-filter-input"
-          placeholder="Lọc nhanh 25 mục..."
-          aria-label="Lọc nhanh danh mục ở thanh bên"
-        />
+        <nav class="sidebar-tree" id="sidebarCategoryList" aria-label="Cây danh mục và mẫu giao diện"></nav>
       </div>
-      <nav class="sidebar-list" id="sidebarCategoryList" aria-label="Điều hướng theo danh mục"></nav>
     </aside>
 
     <main class="main-workspace" id="mainContent" tabindex="-1">
@@ -79,16 +78,15 @@
   <div class="fs-modal" id="fullscreenModal" role="dialog" aria-modal="true" aria-labelledby="fsModalTitle" hidden>
     <div class="fs-modal-bar">
       <div class="fs-modal-title">
-        <strong id="fsModalTitle">Xem toàn màn hình</strong>
+        <strong id="fsModalTitle">Full preview</strong>
         <span class="fs-modal-sub" id="fsModalCategory"></span>
       </div>
       <div class="fs-modal-actions">
-        <div class="viewport-group" role="group" aria-label="Kích thước màn hình trong chế độ phóng to">
-          <button type="button" class="vp-btn is-active" data-fsvp="100%">Desktop (100%)</button>
-          <button type="button" class="vp-btn" data-fsvp="768px">Tablet (768px)</button>
-          <button type="button" class="vp-btn" data-fsvp="375px">Mobile (375px)</button>
+        <div class="pill-switch-group" role="group" aria-label="Kích thước màn hình trong chế độ phóng to">
+          <button type="button" class="pill-switch-btn is-active" data-fsvp="100%">🖥 Desktop</button>
+          <button type="button" class="pill-switch-btn" data-fsvp="375px">📱 Mobile</button>
         </div>
-        <button type="button" class="btn btn-danger" id="closeFullscreenBtn">✕ Đóng (Esc)</button>
+        <button type="button" class="pill-btn pill-btn-dark" id="closeFullscreenBtn">✕ Close (Esc)</button>
       </div>
     </div>
     <div class="fs-modal-stage">

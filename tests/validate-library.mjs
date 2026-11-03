@@ -83,6 +83,8 @@ assert.ok(indexHtml.includes('sandbox="allow-scripts allow-forms"'), "index.html
 assert.ok(appJs.includes('sandbox="allow-scripts allow-forms"'), "js/app.js phải cho phép allow-forms trong sandbox preview");
 assert.ok(appJs.includes("cl-preview-escape"), "js/app.js phải chuyển tiếp phím Escape từ iframe toàn màn hình");
 assert.ok(appJs.includes("skipToMainLink"), "js/app.js phải xử lý skipToMainLink không làm mất route");
-assert.ok(appCss.includes("flex-wrap: wrap"), "css/app.css phải hỗ trợ xuống dòng cho thanh điều hướng trên mobile");
+assert.ok(appJs.includes("data-cat-toggle"), "js/app.js phải hỗ trợ cây danh mục đóng/mở (Accordion Tree)");
+assert.ok(!appJs.includes('data-tab="full"'), "js/app.js chỉ được hiển thị 3 tab HTML, CSS, JS theo chuẩn CodeShikhi");
+assert.ok(appCss.includes("--radius-pill: 999px"), "css/app.css phải định nghĩa thiết kế nút bo tròn chuẩn CodeShikhi");
 
-console.log(`✓ Kiểm thử thành công: ${categories.length} danh mục, ${components.length} mẫu Component/Template thuần HTML/CSS/JS, đồng bộ JSON 100%.`);
+console.log(`✓ Kiểm thử thành công: ${categories.length} danh mục, ${components.length} mẫu Component/Template thuần HTML/CSS/JS, giao diện chuẩn CodeShikhi v1.1.0.`);

@@ -1,6 +1,6 @@
 /**
- * Code Library — Ứng dụng SPA Tra cứu, Xem trước (Live Preview) & Chỉnh sửa Component
- * 100% Vanilla JavaScript — Không phụ thuộc thư viện ngoài
+ * Code Library v1.1 — Giao diện Chuẩn Bố cục CodeShikhi
+ * 1-Click Sidebar Tree • Live Preview • 3-Tab Source Code (HTML / CSS / JS)
  */
 (function () {
   "use strict";
@@ -22,13 +22,14 @@
   const state = {
     activeCategorySlug: null,
     activeComponentId: null,
-    activeCodeTab: "html", // "html" | "css" | "js" | "full"
-    activeViewport: "100%", // "100%" | "768px" | "375px"
+    expandedCategories: new Set([categories[0] ? categories[0].slug : "header"]),
+    activeCodeTab: "html", // Chỉ 3 tab: "html" | "css" | "js"
+    activeViewport: "100%", // "100%" (Desktop) | "375px" (Mobile)
     sidebarFilter: "",
     searchQuery: ""
   };
 
-  // Khung HTML5 Boilerplate chuẩn thay thế cho Bootstrap Starter Template
+  // Khung HTML5 Boilerplate chuẩn
   const HTML5_BOILERPLATE = `<!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -36,41 +37,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dự án Web Chuẩn HTML5 / CSS3 / JS</title>
   <style>
-    :root {
-      --bg: #f8fafc;
-      --surface: #ffffff;
-      --text: #0f172a;
-      --muted: #475569;
-      --border: 2px solid #cbd5e1;
-      --accent: #2563eb;
-      --radius: 10px;
-    }
     *, *::before, *::after {
       box-sizing: border-box;
     }
     body {
       margin: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: var(--bg);
-      color: var(--text);
+      background: #f8fafc;
+      color: #0f172a;
       line-height: 1.5;
       padding: 24px;
-    }
-    .container {
-      max-width: 1140px;
-      margin: 0 auto;
     }
     /* Dán CSS của Component vào dưới đây */
   </style>
 </head>
 <body>
-  <main class="container">
-    <!-- Dán HTML của Component vào dưới đây -->
-    <h1>Xin chào! Khung HTML5 Chuẩn đã sẵn sàng.</h1>
-  </main>
+  <!-- Dán HTML của Component vào dưới đây -->
 
   <script>
-    // Dán JavaScript của Component vào dưới đây
+    // Dán JS của Component vào dưới đây
   </script>
 </body>
 </html>`;
@@ -109,17 +94,6 @@
       });
     }
     return draftStore.get(comp.id);
-  }
-
-  function resetComponentDraft(comp) {
-    if (!comp) return { html: "", css: "", js: "" };
-    const fresh = {
-      html: comp.html || "",
-      css: comp.css || "",
-      js: comp.js || ""
-    };
-    draftStore.set(comp.id, fresh);
-    return fresh;
   }
 
   function sanitizeInlineStyle(cssText) {
@@ -229,11 +203,11 @@ ${safeJs}
   }
 
   // ==========================================================================
-  // 2. TÌM KIẾM TIẾNG VIỆT KHÔNG DẤU & THỐNG KÊ DANH MỤC
+  // 2. TRUY VẤN DANH MỤC & TÌM KIẾM TIẾNG VIỆT KHÔNG DẤU
   // ==========================================================================
 
-  function getCategoryComponentCount(slug) {
-    return components.filter((c) => c.category === slug).length;
+  function getComponentsByCategory(slug) {
+    return components.filter((c) => c.category === slug);
   }
 
   function searchComponents(rawQuery) {
@@ -264,15 +238,17 @@ ${safeJs}
     const norm = normalizeViText(rawFilter);
     if (!norm) return categories.slice();
     return categories.filter((cat) => {
+      const catComps = getComponentsByCategory(cat.slug);
+      const compNames = catComps.map((c) => `${c.title} ${c.titleVi}`).join(" ");
       const hay = normalizeViText(
-        [cat.slug, cat.nameEn, cat.nameVi, cat.description, ...(cat.keywords || [])].join(" ")
+        [cat.slug, cat.nameEn, cat.nameVi, cat.description, compNames, ...(cat.keywords || [])].join(" ")
       );
       return hay.includes(norm);
     });
   }
 
   // ==========================================================================
-  // 3. SAO CHÉP CLIPBOARD, TẢI FILE & THÔNG BÁO TOAST
+  // 3. CLIPBOARD, OPEN IN NEW TAB & TOAST
   // ==========================================================================
 
   function showToast(message) {
@@ -284,7 +260,7 @@ ${safeJs}
     container.appendChild(item);
     setTimeout(() => {
       item.remove();
-    }, 2400);
+    }, 2200);
   }
 
   async function copyTextToClipboard(text, label) {
@@ -301,452 +277,266 @@ ${safeJs}
         document.execCommand("copy");
         temp.remove();
       }
-      showToast(`✓ Đã sao chép ${label} vào bộ nhớ tạm!`);
+      showToast(`✓ Copied ${label}!`);
     } catch (_err) {
-      showToast(`⚠ Không thể tự động sao chép ${label}. Hãy chọn và Ctrl+C.`);
+      showToast(`⚠ Không thể tự động copy ${label}.`);
     }
   }
 
-  function downloadHtmlFile(filename, content) {
-    const blob = new Blob([content], { type: "text/html;charset=utf-8" });
+  function openPreviewInNewTab(comp) {
+    if (!comp) return;
+    const srcdocAttr = escapeHtml(buildPreviewDoc(getComponentDraft(comp)));
+    const safeTitle = escapeHtml(comp.title || "Live Preview");
+    const wrapperHtml = `<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>${safeTitle} — Live Preview</title>
+  <style>
+    html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #f8fafc; }
+    iframe { width: 100%; height: 100%; border: none; display: block; background: #ffffff; }
+  </style>
+</head>
+<body>
+  <iframe sandbox="allow-scripts allow-forms" srcdoc="${srcdocAttr}" title="${safeTitle}"></iframe>
+</body>
+</html>`;
+    const blob = new Blob([wrapperHtml], { type: "text/html;charset=utf-8" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 500);
-    showToast(`✓ Đã tải xuống ${filename}`);
+    window.open(url, "_blank", "noopener");
+    setTimeout(() => URL.revokeObjectURL(url), 10000);
   }
 
   // ==========================================================================
-  // 4. RENDER SIDEBAR 25 DANH MỤC
+  // 4. RENDER SIDEBAR ACCORDION TREE (1-Click Mở Ngay Component)
   // ==========================================================================
 
   function renderSidebar() {
     const listEl = document.getElementById("sidebarCategoryList");
-    const totalEl = document.getElementById("navTotalCount");
-    if (totalEl) totalEl.textContent = String(components.length);
     if (!listEl) return;
 
     const filteredCats = filterSidebarCategories(state.sidebarFilter);
-
     if (filteredCats.length === 0) {
-      listEl.innerHTML = `<div class="empty-state"><p>Không tìm thấy danh mục phù hợp.</p></div>`;
+      listEl.innerHTML = `<p style="padding:10px;font-size:0.82rem;color:var(--text-muted);">Không tìm thấy mục phù hợp.</p>`;
       return;
     }
 
-    const allItemHtml = `
-      <a href="#/all" class="sidebar-item ${state.activeCategorySlug === "__all__" ? "is-active" : ""}">
-        <div class="sidebar-item-left">
-          <span class="sidebar-item-icon" aria-hidden="true">📚</span>
-          <div class="sidebar-item-names">
-            <span class="sidebar-item-en">All Components</span>
-            <span class="sidebar-item-vi">Tất cả mẫu trong kho</span>
-          </div>
-        </div>
-        <span class="sidebar-item-count">${components.length}</span>
-      </a>
-    `;
+    const isFiltering = Boolean(state.sidebarFilter.trim());
 
-    const catsHtml = filteredCats
+    listEl.innerHTML = filteredCats
       .map((cat) => {
-        const count = getCategoryComponentCount(cat.slug);
-        const isActive = state.activeCategorySlug === cat.slug;
+        const catComps = getComponentsByCategory(cat.slug);
+        const isOpen = isFiltering || state.expandedCategories.has(cat.slug);
+        const isAllCategoryView =
+          !state.activeComponentId && state.activeCategorySlug === cat.slug;
+
+        const subItemsHtml = catComps
+          .map((comp) => {
+            const isActive = state.activeComponentId === comp.id;
+            return `
+              <a
+                href="#/component/${encodeURIComponent(comp.id)}"
+                class="tree-sub-link ${isActive ? "is-active" : ""}"
+                title="${escapeHtml(comp.titleVi)}"
+              >
+                ${escapeHtml(comp.title)}
+              </a>
+            `;
+          })
+          .join("");
+
         return `
-          <a href="#/category/${encodeURIComponent(cat.slug)}" class="sidebar-item ${isActive ? "is-active" : ""}">
-            <div class="sidebar-item-left">
-              <span class="sidebar-item-icon" aria-hidden="true">${escapeHtml(cat.icon)}</span>
-              <div class="sidebar-item-names">
-                <span class="sidebar-item-en">${escapeHtml(cat.order)}. ${escapeHtml(cat.nameEn)}</span>
-                <span class="sidebar-item-vi">${escapeHtml(cat.nameVi)}</span>
-              </div>
+          <div class="tree-group ${isOpen ? "is-open" : ""}" data-cat-group="${escapeHtml(cat.slug)}">
+            <button
+              type="button"
+              class="tree-cat-btn"
+              data-cat-toggle="${escapeHtml(cat.slug)}"
+              aria-expanded="${isOpen ? "true" : "false"}"
+            >
+              <span>${escapeHtml(cat.nameEn)}</span>
+              <span class="tree-cat-meta">
+                <span>${catComps.length}</span>
+                <span>${isOpen ? "⌄" : "›"}</span>
+              </span>
+            </button>
+
+            <div class="tree-sublist">
+              <a
+                href="#/category/${encodeURIComponent(cat.slug)}"
+                class="tree-sub-link is-all-link ${isAllCategoryView ? "is-active" : ""}"
+              >
+                All ${escapeHtml(cat.nameEn)}
+              </a>
+              ${subItemsHtml}
             </div>
-            <span class="sidebar-item-count">${count}</span>
-          </a>
+          </div>
         `;
       })
       .join("");
 
-    listEl.innerHTML = (state.sidebarFilter ? "" : allItemHtml) + catsHtml;
-  }
-
-  // ==========================================================================
-  // 5. RENDER CÁC MÀN HÌNH CHÍNH (HOME, CATEGORY/SEARCH, DETAIL, BOILERPLATE)
-  // ==========================================================================
-
-  function renderComponentCard(comp) {
-    const cat = categoryMap.get(comp.category);
-    const catLabel = cat ? `${cat.nameEn} • ${cat.nameVi}` : comp.category;
-    const tagsHtml = (comp.tags || [])
-      .slice(0, 4)
-      .map((t) => `<span class="tag-chip">#${escapeHtml(t)}</span>`)
-      .join("");
-
-    return `
-      <article class="component-card" data-comp-id="${escapeHtml(comp.id)}">
-        <div class="component-card-header">
-          <div>
-            <h3 class="component-card-title">
-              <a href="#/component/${encodeURIComponent(comp.id)}">${escapeHtml(comp.titleVi)}</a>
-            </h3>
-            <span class="component-card-sub">${escapeHtml(comp.title)} — ${escapeHtml(catLabel)}</span>
-          </div>
-          <span class="category-count-pill">${escapeHtml(cat ? cat.icon : "🧩")}</span>
-        </div>
-
-        <div class="component-preview-window">
-          <iframe
-            class="mini-preview-iframe"
-            sandbox="allow-scripts allow-forms"
-            loading="lazy"
-            data-preview-id="${escapeHtml(comp.id)}"
-            title="Xem trước ${escapeHtml(comp.titleVi)}"
-          ></iframe>
-        </div>
-
-        <div class="component-card-body">
-          <p class="component-card-summary">${escapeHtml(comp.summary)}</p>
-          <div class="tag-list">${tagsHtml}</div>
-          <div class="component-card-actions">
-            <a href="#/component/${encodeURIComponent(comp.id)}" class="btn btn-primary">
-              ⚡ Mở Live Editor &amp; 4 Tab Code
-            </a>
-            <button type="button" class="btn" data-copy-full="${escapeHtml(comp.id)}">
-              📋 Copy 1-File HTML
-            </button>
-          </div>
-        </div>
-      </article>
-    `;
-  }
-
-  function hydrateMiniPreviews(container) {
-    const iframes = container.querySelectorAll("iframe[data-preview-id]");
-    iframes.forEach((iframe) => {
-      const compId = iframe.getAttribute("data-preview-id");
-      const comp = componentMap.get(compId);
-      if (comp) {
-        iframe.srcdoc = buildPreviewDoc(getComponentDraft(comp));
-      }
-    });
-
-    const copyBtns = container.querySelectorAll("button[data-copy-full]");
-    copyBtns.forEach((btn) => {
+    // Khi bấm vào tên Danh mục ở Sidebar:
+    // Mở xổ danh sách con VÀ chuyển ngay sang mẫu Component đầu tiên của danh mục đó (chỉ 1 lần nhấp!)
+    listEl.querySelectorAll("button[data-cat-toggle]").forEach((btn) => {
       btn.addEventListener("click", () => {
-        const compId = btn.getAttribute("data-copy-full");
-        const comp = componentMap.get(compId);
-        if (comp) {
-          const fullHtml = buildStandaloneHtml(comp.titleVi, getComponentDraft(comp));
-          copyTextToClipboard(fullHtml, `Full HTML (${comp.titleVi})`);
+        const slug = btn.getAttribute("data-cat-toggle");
+        if (!slug) return;
+        const catComps = getComponentsByCategory(slug);
+        const firstComp = catComps[0];
+        const targetHash = firstComp
+          ? `#/component/${encodeURIComponent(firstComp.id)}`
+          : `#/category/${encodeURIComponent(slug)}`;
+
+        // Nếu đang đứng ở đúng danh mục này rồi thì cho phép đóng/mở nhánh cây tại chỗ
+        if (state.activeCategorySlug === slug) {
+          if (state.expandedCategories.has(slug)) {
+            state.expandedCategories.delete(slug);
+          } else {
+            state.expandedCategories.add(slug);
+          }
+          renderSidebar();
+          return;
+        }
+
+        // Nếu đang ở Trang chủ hoặc danh mục khác -> Mở nhánh và chuyển thẳng tới Component đầu tiên
+        state.expandedCategories.add(slug);
+        if (window.location.hash === targetHash) {
+          handleRoute();
+        } else {
+          window.location.hash = targetHash;
         }
       });
     });
   }
 
-  function renderHomeView(container) {
-    const featuredList = components.filter((c) => c.featured);
-
-    const categoryCardsHtml = categories
-      .map((cat) => {
-        const count = getCategoryComponentCount(cat.slug);
-        return `
-          <a href="#/category/${encodeURIComponent(cat.slug)}" class="category-card">
-            <div>
-              <div class="category-card-top">
-                <span class="category-icon-box" aria-hidden="true">${escapeHtml(cat.icon)}</span>
-                <span class="category-count-pill">${count} mẫu</span>
-              </div>
-              <h3>${escapeHtml(cat.order)}. ${escapeHtml(cat.nameEn)}</h3>
-              <span class="category-card-vi">${escapeHtml(cat.nameVi)}</span>
-              <p>${escapeHtml(cat.description)}</p>
-            </div>
-          </a>
-        `;
-      })
-      .join("");
-
-    container.innerHTML = `
-      <!-- HERO SECTION -->
-      <section class="home-hero">
-        <div class="hero-badge-row">
-          <span class="pill-badge">✨ 100% Thuần HTML5 • CSS3 • Vanilla JS</span>
-          <span class="pill-badge">🚫 Không phụ thuộc Bootstrap</span>
-          <span class="pill-badge">🔲 Đường viền phân vùng rõ nét</span>
-        </div>
-        <h1>Kho Tra Cứu Component &amp; Template Chuẩn Web</h1>
-        <p>
-          Toàn bộ 25 danh mục giao diện được xây dựng bằng HTML5 ngữ nghĩa, biến CSS gốc và JavaScript thuần.
-          Xem trước trực tiếp trên Desktop/Tablet/Mobile, chỉnh sửa thử ngay trên trình duyệt và sao chép từng phần hoặc gộp 1 file HTML chạy ngay.
-        </p>
-        <div class="hero-actions">
-          <a href="#/all" class="btn btn-primary">📚 Khám phá toàn bộ ${components.length} mẫu →</a>
-          <a href="#/boilerplate" class="btn">📄 Lấy khung HTML5 Chuẩn (Boilerplate)</a>
-          <button type="button" class="btn" id="heroFocusSearchBtn">🔍 Tìm nhanh (Phím /)</button>
-        </div>
-
-        <div class="hero-stats-grid">
-          <div class="stat-card">
-            <strong>${categories.length} Danh mục</strong>
-            <span>Đầy đủ từ Navbar, Hero đến Full Page</span>
-          </div>
-          <div class="stat-card">
-            <strong>${components.length} Mẫu Khởi Đầu</strong>
-            <span>Có sẵn tương tác JS thực tế</span>
-          </div>
-          <div class="stat-card">
-            <strong>4 Tab Code</strong>
-            <span>HTML • CSS • JS • Gộp 1 File HTML</span>
-          </div>
-          <div class="stat-card">
-            <strong>0 KB Thư viện ngoài</strong>
-            <span>Copy vào bất kỳ dự án nào cũng chạy</span>
-          </div>
-        </div>
-      </section>
-
-      <!-- BROWSE BY 25 CATEGORIES -->
-      <section class="section-block">
-        <div class="section-header">
-          <div>
-            <h2>Duyệt theo 25 Danh mục (Browse by Section)</h2>
-            <p>Bấm vào bất kỳ danh mục nào để xem các mẫu thiết kế, Live Preview và lấy code tương ứng.</p>
-          </div>
-          <a href="#/all" class="btn">Xem tất cả ${components.length} mẫu →</a>
-        </div>
-        <div class="category-grid">
-          ${categoryCardsHtml}
-        </div>
-      </section>
-
-      <!-- FEATURED COMPONENTS (EDITOR'S PICKS) -->
-      <section class="section-block">
-        <div class="section-header">
-          <div>
-            <h2>Mẫu Giao diện Nổi bật (Editor's Picks)</h2>
-            <p>Các mẫu tiêu biểu có đầy đủ tương tác JavaScript và bố cục đa thiết bị.</p>
-          </div>
-        </div>
-        <div class="component-grid" id="homeFeaturedGrid">
-          ${featuredList.map(renderComponentCard).join("")}
-        </div>
-      </section>
-    `;
-
-    hydrateMiniPreviews(container);
-
-    document.getElementById("heroFocusSearchBtn")?.addEventListener("click", () => {
-      const input = document.getElementById("globalSearchInput");
-      if (input) {
-        input.focus();
-        input.select();
-      }
-    });
-  }
-
-  function renderBoilerplateView(container) {
-    container.innerHTML = `
-      <div class="breadcrumb-bar">
-        <div class="breadcrumb-links">
-          <a href="#/">← Trang chủ</a>
-          <span>/</span>
-          <span>Khung HTML5 Chuẩn (Starter Boilerplate)</span>
-        </div>
-        <button type="button" class="btn btn-primary" id="copyBoilerplateBtn">📋 Sao chép Khung HTML5</button>
-      </div>
-
-      <section class="section-block">
-        <div class="section-header">
-          <div>
-            <h2>Khung Khởi Đầu HTML5 &amp; Biến CSS Chuẩn (Thay thế Bootstrap Starter)</h2>
-            <p>Sao chép khung trang chuẩn dưới đây vào file <code>index.html</code> của bạn, sau đó dán mã HTML, CSS và JS của bất kỳ Component nào vào vị trí tương ứng.</p>
-          </div>
-        </div>
-        <pre class="boilerplate-pre">${escapeHtml(HTML5_BOILERPLATE)}</pre>
-      </section>
-    `;
-
-    document.getElementById("copyBoilerplateBtn")?.addEventListener("click", () => {
-      copyTextToClipboard(HTML5_BOILERPLATE, "Khung HTML5 Boilerplate");
-    });
-  }
-
-  function renderListView(container, options) {
-    const { title, subtitle, list, badgeText } = options;
-
-    const cardsHtml =
-      list.length > 0
-        ? `<div class="component-grid">${list.map(renderComponentCard).join("")}</div>`
-        : `
-          <div class="empty-state">
-            <h3>Không tìm thấy mẫu nào khớp với yêu cầu</h3>
-            <p>Hãy thử tìm với từ khóa khác (ví dụ: <code>navbar</code>, <code>bang gia</code>, <code>form</code>, <code>lich</code>) hoặc quay lại danh sách tất cả danh mục.</p>
-            <a href="#/all" class="btn btn-primary">Xem toàn bộ ${components.length} mẫu</a>
-          </div>
-        `;
-
-    container.innerHTML = `
-      <div class="breadcrumb-bar">
-        <div class="breadcrumb-links">
-          <a href="#/">← Trang chủ</a>
-          <span>/</span>
-          <span>${escapeHtml(title)}</span>
-        </div>
-        <span class="pill-badge">${escapeHtml(badgeText)}</span>
-      </div>
-
-      <section class="section-block">
-        <div class="section-header">
-          <div>
-            <h2>${escapeHtml(title)}</h2>
-            <p>${escapeHtml(subtitle)}</p>
-          </div>
-        </div>
-        ${cardsHtml}
-      </section>
-    `;
-
-    hydrateMiniPreviews(container);
-  }
+  // ==========================================================================
+  // 5. RENDER COMPONENT DETAIL VIEW (Chuẩn Khung Khoanh Đỏ CodeShikhi)
+  // ==========================================================================
 
   function renderComponentDetailView(container, comp) {
     const cat = categoryMap.get(comp.category);
-    const draft = getComponentDraft(comp);
+    const catNameEn = cat ? cat.nameEn : comp.category;
+    const catEyebrow = cat ? `${cat.nameEn} • ${cat.nameVi}` : comp.category;
 
-    // Tìm mẫu trước / tiếp theo để điều hướng nhanh
-    const idx = components.findIndex((c) => c.id === comp.id);
-    const prevComp = idx > 0 ? components[idx - 1] : null;
-    const nextComp = idx >= 0 && idx < components.length - 1 ? components[idx + 1] : null;
-
+    // Chỉ lấy tối đa 3 pill tag gọn gàng như CodeShikhi
     const tagsHtml = (comp.tags || [])
-      .map((t) => `<span class="tag-chip">#${escapeHtml(t)}</span>`)
+      .slice(0, 3)
+      .map((t) => `<span class="comp-pill-tag">#${escapeHtml(t)}</span>`)
       .join("");
 
+    const activeTabUpper = state.activeCodeTab.toUpperCase();
+
     container.innerHTML = `
-      <!-- BREADCRUMB & QUICK NAVIGATION -->
-      <div class="breadcrumb-bar">
-        <div class="breadcrumb-links">
-          <a href="#/">Trang chủ</a>
-          <span>/</span>
-          ${
-            cat
-              ? `<a href="#/category/${encodeURIComponent(cat.slug)}">${escapeHtml(cat.icon)} ${escapeHtml(cat.nameEn)} (${escapeHtml(cat.nameVi)})</a>`
-              : `<span>Danh mục</span>`
-          }
-          <span>/</span>
-          <span>${escapeHtml(comp.titleVi)}</span>
-        </div>
-        <div class="component-card-actions" style="border:none;padding:0;">
-          ${
-            prevComp
-              ? `<a href="#/component/${encodeURIComponent(prevComp.id)}" class="btn" title="${escapeHtml(prevComp.titleVi)}">← Mẫu trước</a>`
-              : ""
-          }
-          ${
-            nextComp
-              ? `<a href="#/component/${encodeURIComponent(nextComp.id)}" class="btn" title="${escapeHtml(nextComp.titleVi)}">Mẫu tiếp →</a>`
-              : ""
-          }
-        </div>
-      </div>
+      <!-- 1. KHỐI HEADER TIÊU ĐỀ COMPONENT -->
+      <section class="comp-hero-box">
+        <a href="#/category/${encodeURIComponent(comp.category)}" class="comp-back-link">
+          ← Back to ${escapeHtml(catNameEn)}
+        </a>
+        <span class="comp-cat-eyebrow">${escapeHtml(catEyebrow)}</span>
+        <h1 class="comp-main-title">${escapeHtml(comp.title)}</h1>
+        <p class="comp-subtitle">${escapeHtml(comp.titleVi)} — ${escapeHtml(comp.summary)}</p>
+        <div class="comp-tags-row">${tagsHtml}</div>
+      </section>
 
-      <!-- HEADER INFO -->
-      <section class="section-block">
-        <div class="section-header">
-          <div>
-            <h2>${escapeHtml(comp.titleVi)}</h2>
-            <p>${escapeHtml(comp.title)} — ${escapeHtml(comp.summary)}</p>
-          </div>
-          <div class="tag-list">${tagsHtml}</div>
+      <!-- 2. KHỐI LIVE PREVIEW -->
+      <section class="comp-section">
+        <div class="comp-section-head">
+          <h2 class="comp-section-title">Live preview</h2>
+          <button type="button" class="pill-btn pill-btn-purple" id="openFullscreenBtn">
+            👁 Full preview
+          </button>
         </div>
 
-        <!-- LIVE PLAYGROUND BOX -->
-        <div class="playground-box">
-          <div class="playground-toolbar">
-            <div class="viewport-group" role="group" aria-label="Chọn kích thước khung nhìn">
-              <button type="button" class="vp-btn ${state.activeViewport === "100%" ? "is-active" : ""}" data-vp="100%">
-                🖥️ Desktop (100%)
+        <div class="preview-outer-card">
+          <div class="preview-bar">
+            <div class="preview-device-pills" role="group" aria-label="Chọn khung nhìn thiết bị">
+              <button
+                type="button"
+                class="device-pill-btn ${state.activeViewport === "100%" ? "is-active" : ""}"
+                data-vp="100%"
+              >
+                🖥 Desktop
               </button>
-              <button type="button" class="vp-btn ${state.activeViewport === "768px" ? "is-active" : ""}" data-vp="768px">
-                📱 Tablet (768px)
-              </button>
-              <button type="button" class="vp-btn ${state.activeViewport === "375px" ? "is-active" : ""}" data-vp="375px">
-                📲 Mobile (375px)
+              <button
+                type="button"
+                class="device-pill-btn ${state.activeViewport === "375px" ? "is-active" : ""}"
+                data-vp="375px"
+              >
+                📱 Mobile
               </button>
             </div>
 
-            <div class="component-card-actions" style="border:none;padding:0;">
-              <button type="button" class="btn" id="runPreviewBtn" title="Phím tắt: Ctrl + Enter">
-                ▶ Chạy lại (Ctrl+Enter)
-              </button>
-              <button type="button" class="btn" id="resetCodeBtn">
-                ↺ Khôi phục gốc
-              </button>
-              <button type="button" class="btn btn-primary" id="openFullscreenBtn">
-                ⛶ Toàn màn hình
+            <div class="preview-bar-right">
+              <button type="button" class="open-tab-link" id="openNewTabBtn">
+                ↗ Open in new tab
               </button>
             </div>
           </div>
 
-          <div class="playground-canvas">
-            <div class="preview-viewport-frame" id="previewViewportFrame" style="width: ${escapeHtml(state.activeViewport)};">
+          <div class="preview-gray-stage">
+            <div class="preview-inner-box" id="previewViewportFrame" style="width: ${escapeHtml(state.activeViewport)};">
               <iframe
                 id="detailPreviewIframe"
                 class="preview-iframe"
                 sandbox="allow-scripts allow-forms"
-                title="Live Preview cho ${escapeHtml(comp.titleVi)}"
+                title="Live Preview cho ${escapeHtml(comp.title)}"
               ></iframe>
             </div>
           </div>
+        </div>
+      </section>
 
-          <!-- 4-TAB CODE INSPECTOR & LIVE EDITOR -->
-          <div class="code-inspector">
-            <div class="code-tabs-bar">
-              <div class="code-tabs-list" role="tablist" aria-label="Các tab mã nguồn">
-                <button type="button" role="tab" class="code-tab-btn ${state.activeCodeTab === "html" ? "is-active" : ""}" data-tab="html">
-                  HTML
-                </button>
-                <button type="button" role="tab" class="code-tab-btn ${state.activeCodeTab === "css" ? "is-active" : ""}" data-tab="css">
-                  CSS
-                </button>
-                <button type="button" role="tab" class="code-tab-btn ${state.activeCodeTab === "js" ? "is-active" : ""}" data-tab="js">
-                  JavaScript
-                </button>
-                <button type="button" role="tab" class="code-tab-btn ${state.activeCodeTab === "full" ? "is-active" : ""}" data-tab="full">
-                  ✨ Full HTML (Gộp 1 file chạy ngay)
-                </button>
-              </div>
-
-              <div class="component-card-actions" style="border:none;padding:0;">
-                <button type="button" class="btn" id="copyCurrentTabBtn">
-                  📋 Copy Tab Hiện Tại
-                </button>
-                <button type="button" class="btn btn-primary" id="copyFullFileBtn">
-                  ⚡ Copy Full HTML (1-File)
-                </button>
-                <button type="button" class="btn" id="downloadFileBtn">
-                  ⬇ Tải file .html
-                </button>
-              </div>
-            </div>
-
-            <div class="code-editor-wrap">
-              <label for="liveCodeTextarea" class="sr-only">Trình chỉnh sửa mã nguồn trực tiếp</label>
-              <textarea
-                id="liveCodeTextarea"
-                class="code-editor-textarea"
-                spellcheck="false"
-              ></textarea>
-            </div>
-
-            <div class="code-status-bar">
-              <span id="editorModeHint">
-                💡 Bạn có thể sửa trực tiếp mã HTML, CSS hoặc JS ở trên — khung Live Preview sẽ tự động cập nhật!
-              </span>
-              <span id="editorSyncStatus">Trạng thái: Đã đồng bộ Live Preview ✓</span>
-            </div>
+      <!-- 3. KHỐI SOURCE CODE (Chỉ 3 tab HTML | CSS | JS và dừng tại đây) -->
+      <section class="comp-section">
+        <div class="comp-section-head">
+          <h2 class="comp-section-title">Source code</h2>
+          <div class="pill-switch-group" role="tablist" aria-label="Chọn ngôn ngữ mã nguồn">
+            <button
+              type="button"
+              role="tab"
+              class="pill-switch-btn ${state.activeCodeTab === "html" ? "is-active" : ""}"
+              data-tab="html"
+            >
+              HTML
+            </button>
+            <button
+              type="button"
+              role="tab"
+              class="pill-switch-btn ${state.activeCodeTab === "css" ? "is-active" : ""}"
+              data-tab="css"
+            >
+              CSS
+            </button>
+            <button
+              type="button"
+              role="tab"
+              class="pill-switch-btn ${state.activeCodeTab === "js" ? "is-active" : ""}"
+              data-tab="js"
+            >
+              JS
+            </button>
           </div>
+        </div>
+
+        <div class="source-card">
+          <div class="source-winbar">
+            <div class="source-winbar-left">
+              <span class="win-dot win-dot-red"></span>
+              <span class="win-dot win-dot-amber"></span>
+              <span class="win-dot win-dot-green"></span>
+              <span class="source-lang-label" id="sourceLangLabel">${escapeHtml(activeTabUpper)}</span>
+            </div>
+            <button type="button" class="pill-btn pill-btn-dark" id="copyCodeBtn">
+              📋 Copy code
+            </button>
+          </div>
+
+          <label for="liveCodeTextarea" class="sr-only">Mã nguồn ${escapeHtml(activeTabUpper)}</label>
+          <textarea
+            id="liveCodeTextarea"
+            class="source-textarea"
+            spellcheck="false"
+          ></textarea>
         </div>
       </section>
     `;
@@ -754,65 +544,48 @@ ${safeJs}
     const iframe = document.getElementById("detailPreviewIframe");
     const viewportFrame = document.getElementById("previewViewportFrame");
     const textarea = document.getElementById("liveCodeTextarea");
-    const modeHint = document.getElementById("editorModeHint");
-    const syncStatus = document.getElementById("editorSyncStatus");
+    const langLabel = document.getElementById("sourceLangLabel");
 
     function updatePreviewIframe() {
       const currentDraft = getComponentDraft(comp);
       if (iframe) {
         iframe.srcdoc = buildPreviewDoc(currentDraft);
       }
-      if (syncStatus) {
-        syncStatus.textContent = "Trạng thái: Đã cập nhật Live Preview lúc " + new Date().toLocaleTimeString("vi-VN");
-      }
     }
 
     function syncTextareaFromTab() {
       const currentDraft = getComponentDraft(comp);
       if (!textarea) return;
-      if (state.activeCodeTab === "full") {
-        textarea.value = buildStandaloneHtml(comp.titleVi, currentDraft);
-        textarea.readOnly = true;
-        if (modeHint) {
-          modeHint.textContent =
-            "📦 Tab Full HTML tự động gộp từ 3 tab HTML + CSS + JS để bạn copy 1 lần dán vào file .html là chạy ngay.";
-        }
-      } else {
-        textarea.value = currentDraft[state.activeCodeTab] || "";
-        textarea.readOnly = false;
-        if (modeHint) {
-          modeHint.textContent = `✏️ Đang sửa tab ${state.activeCodeTab.toUpperCase()} — gõ trực tiếp hoặc nhấn Ctrl + Enter để làm mới Preview.`;
-        }
+      textarea.value = currentDraft[state.activeCodeTab] || "";
+      if (langLabel) {
+        langLabel.textContent = state.activeCodeTab.toUpperCase();
       }
     }
 
-    // Khởi tạo lần đầu
     updatePreviewIframe();
     syncTextareaFromTab();
 
-    // Lắng nghe gõ phím trong Live Editor (debounce 250ms)
+    // Khi sửa code trong khung Source code -> tự động cập nhật Live preview
     let debounceTimer = null;
     textarea?.addEventListener("input", () => {
-      if (state.activeCodeTab === "full") return;
       const currentDraft = getComponentDraft(comp);
       currentDraft[state.activeCodeTab] = textarea.value;
-      if (syncStatus) syncStatus.textContent = "Trạng thái: Đang đồng bộ...";
       clearTimeout(debounceTimer);
-      debounceTimer = setTimeout(updatePreviewIframe, 250);
+      debounceTimer = setTimeout(updatePreviewIframe, 220);
     });
 
-    // Chuyển đổi 4 tab code
-    container.querySelectorAll(".code-tab-btn").forEach((btn) => {
+    // Chuyển đổi 3 tab HTML | CSS | JS
+    container.querySelectorAll("button[data-tab]").forEach((btn) => {
       btn.addEventListener("click", () => {
         state.activeCodeTab = btn.getAttribute("data-tab") || "html";
-        container.querySelectorAll(".code-tab-btn").forEach((b) => {
+        container.querySelectorAll("button[data-tab]").forEach((b) => {
           b.classList.toggle("is-active", b.getAttribute("data-tab") === state.activeCodeTab);
         });
         syncTextareaFromTab();
       });
     });
 
-    // Chuyển đổi kích thước Viewport (Desktop / Tablet / Mobile)
+    // Chuyển đổi Desktop / Mobile
     container.querySelectorAll("button[data-vp]").forEach((btn) => {
       btn.addEventListener("click", () => {
         state.activeViewport = btn.getAttribute("data-vp") || "100%";
@@ -825,43 +598,152 @@ ${safeJs}
       });
     });
 
-    // Nút Chạy lại, Khôi phục gốc, Toàn màn hình, Copy, Download
-    document.getElementById("runPreviewBtn")?.addEventListener("click", updatePreviewIframe);
-
-    document.getElementById("resetCodeBtn")?.addEventListener("click", () => {
-      resetComponentDraft(comp);
-      syncTextareaFromTab();
-      updatePreviewIframe();
-      showToast("↺ Đã khôi phục mã nguồn về trạng thái gốc!");
-    });
-
+    // Nút Full preview, Open in new tab, Copy code
     document.getElementById("openFullscreenBtn")?.addEventListener("click", () => {
       openFullscreenModal(comp);
     });
 
-    document.getElementById("copyCurrentTabBtn")?.addEventListener("click", () => {
-      const labelMap = {
-        html: "mã HTML",
-        css: "mã CSS",
-        js: "mã JavaScript",
-        full: "Full HTML (1-File)"
-      };
-      copyTextToClipboard(textarea ? textarea.value : "", labelMap[state.activeCodeTab] || "mã nguồn");
+    document.getElementById("openNewTabBtn")?.addEventListener("click", () => {
+      openPreviewInNewTab(comp);
     });
 
-    document.getElementById("copyFullFileBtn")?.addEventListener("click", () => {
-      const fullCode = buildStandaloneHtml(comp.titleVi, getComponentDraft(comp));
-      copyTextToClipboard(fullCode, `Full HTML (${comp.titleVi})`);
-    });
-
-    document.getElementById("downloadFileBtn")?.addEventListener("click", () => {
-      const fullCode = buildStandaloneHtml(comp.titleVi, getComponentDraft(comp));
-      downloadHtmlFile(`${comp.id}.html`, fullCode);
+    document.getElementById("copyCodeBtn")?.addEventListener("click", () => {
+      copyTextToClipboard(textarea ? textarea.value : "", state.activeCodeTab.toUpperCase());
     });
   }
 
   // ==========================================================================
-  // 6. CHẾ ĐỘ XEM TOÀN MÀN HÌNH (FULLSCREEN MODAL)
+  // 6. RENDER TRANG CHỦ, DANH MỤC & BOILERPLATE
+  // ==========================================================================
+
+  function renderHomeView(container) {
+    // Trên trang chủ, bấm vào thẻ Danh mục cũng mở thẳng mẫu Component đầu tiên của mục đó!
+    const categoryCardsHtml = categories
+      .map((cat) => {
+        const catComps = getComponentsByCategory(cat.slug);
+        const firstComp = catComps[0];
+        const targetHref = firstComp
+          ? `#/component/${encodeURIComponent(firstComp.id)}`
+          : `#/category/${encodeURIComponent(cat.slug)}`;
+
+        return `
+          <a href="${targetHref}" class="category-card">
+            <div>
+              <div class="category-card-top">
+                <span class="category-icon-pill" aria-hidden="true">${escapeHtml(cat.icon)}</span>
+                <span class="category-count-badge">${catComps.length} designs</span>
+              </div>
+              <h3>${escapeHtml(cat.nameEn)}</h3>
+              <span class="category-card-vi">${escapeHtml(cat.nameVi)}</span>
+              <p>${escapeHtml(cat.description)}</p>
+            </div>
+          </a>
+        `;
+      })
+      .join("");
+
+    container.innerHTML = `
+      <section class="home-banner">
+        <span class="comp-cat-eyebrow">VANILLA HTML5 • CSS3 • JAVASCRIPT</span>
+        <h1>Browse 25 Component Sections</h1>
+        <p>
+          Nhấp trực tiếp vào bất kỳ danh mục nào ở cột <strong>CATEGORIES</strong> bên trái hoặc lưới bên dưới để mở ngay mẫu giao diện, xem <strong>Live preview</strong> và sao chép <strong>Source code</strong>.
+        </p>
+        <div class="home-actions">
+          <a href="#/component/header-responsive-command" class="pill-btn pill-btn-purple">
+            🚀 Mở ngay Kho Component
+          </a>
+          <a href="#/boilerplate" class="pill-btn">
+            📄 Lấy Khung HTML5 Starter
+          </a>
+        </div>
+      </section>
+
+      <section class="comp-section">
+        <div class="comp-section-head">
+          <h2 class="comp-section-title">Browse by section (25)</h2>
+        </div>
+        <div class="category-grid">
+          ${categoryCardsHtml}
+        </div>
+      </section>
+    `;
+  }
+
+  function renderCategoryOrSearchView(container, options) {
+    const { eyebrow, title, subtitle, list } = options;
+
+    const cardsHtml =
+      list.length > 0
+        ? `<div class="category-grid">
+            ${list
+              .map((comp) => {
+                const cat = categoryMap.get(comp.category);
+                return `
+                  <a href="#/component/${encodeURIComponent(comp.id)}" class="category-card">
+                    <div>
+                      <div class="category-card-top">
+                        <span class="category-icon-pill" aria-hidden="true">${escapeHtml(cat ? cat.icon : "🧩")}</span>
+                        <span class="category-count-badge">Open →</span>
+                      </div>
+                      <h3>${escapeHtml(comp.title)}</h3>
+                      <span class="category-card-vi">${escapeHtml(comp.titleVi)}</span>
+                      <p>${escapeHtml(comp.summary)}</p>
+                    </div>
+                  </a>
+                `;
+              })
+              .join("")}
+          </div>`
+        : `<div class="comp-hero-box"><p>Không tìm thấy mẫu nào khớp với từ khóa.</p></div>`;
+
+    container.innerHTML = `
+      <section class="comp-hero-box">
+        <a href="#/" class="comp-back-link">← Back to Home</a>
+        <span class="comp-cat-eyebrow">${escapeHtml(eyebrow)}</span>
+        <h1 class="comp-main-title">${escapeHtml(title)}</h1>
+        <p class="comp-subtitle">${escapeHtml(subtitle)}</p>
+      </section>
+      <section class="comp-section">
+        ${cardsHtml}
+      </section>
+    `;
+  }
+
+  function renderBoilerplateView(container) {
+    container.innerHTML = `
+      <section class="comp-hero-box">
+        <a href="#/" class="comp-back-link">← Back to Home</a>
+        <span class="comp-cat-eyebrow">STARTER TEMPLATE</span>
+        <h1 class="comp-main-title">HTML5 Starter Boilerplate</h1>
+        <p class="comp-subtitle">Khung HTML5 chuẩn thay thế cho Bootstrap Starter Template — sẵn sàng dán HTML, CSS và JS.</p>
+      </section>
+
+      <section class="comp-section">
+        <div class="source-card">
+          <div class="source-winbar">
+            <div class="source-winbar-left">
+              <span class="win-dot win-dot-red"></span>
+              <span class="win-dot win-dot-amber"></span>
+              <span class="win-dot win-dot-green"></span>
+              <span class="source-lang-label">INDEX.HTML</span>
+            </div>
+            <button type="button" class="pill-btn pill-btn-dark" id="copyBoilerplateBtn">
+              📋 Copy code
+            </button>
+          </div>
+          <textarea class="source-textarea" readonly>${escapeHtml(HTML5_BOILERPLATE)}</textarea>
+        </div>
+      </section>
+    `;
+
+    document.getElementById("copyBoilerplateBtn")?.addEventListener("click", () => {
+      copyTextToClipboard(HTML5_BOILERPLATE, "HTML5 Starter");
+    });
+  }
+
+  // ==========================================================================
+  // 7. FULLSCREEN PREVIEW MODAL
   // ==========================================================================
 
   function openFullscreenModal(comp) {
@@ -872,8 +754,8 @@ ${safeJs}
     if (!modal || !fsIframe || !comp) return;
 
     const cat = categoryMap.get(comp.category);
-    if (titleEl) titleEl.textContent = comp.titleVi;
-    if (catEl) catEl.textContent = cat ? ` — ${cat.nameEn} (${cat.nameVi})` : "";
+    if (titleEl) titleEl.textContent = comp.title;
+    if (catEl) catEl.textContent = cat ? ` — ${cat.nameEn}` : "";
 
     fsIframe.style.width = "100%";
     fsIframe.srcdoc = buildPreviewDoc(getComponentDraft(comp));
@@ -888,7 +770,7 @@ ${safeJs}
   }
 
   // ==========================================================================
-  // 7. ĐIỀU HƯỚNG HASH ROUTER & ĐỒNG BỘ GIAO DIỆN
+  // 8. HASH ROUTER & SỰ KIỆN TOÀN CỤC
   // ==========================================================================
 
   function updateTopNavHighlight(activeKey) {
@@ -923,7 +805,6 @@ ${safeJs}
       const params = new URLSearchParams(queryPart);
       const q = params.get("q") || "";
       state.searchQuery = q;
-      state.activeCategorySlug = null;
       state.activeComponentId = null;
 
       const searchInput = document.getElementById("globalSearchInput");
@@ -932,13 +813,15 @@ ${safeJs}
       }
 
       const results = searchComponents(q);
-      updateTopNavHighlight("");
+      state.activeCategorySlug = null;
+      // Nếu chỉ có đúng 1 kết quả hoặc người dùng muốn mở nhanh: hiển thị danh sách gọn
+      updateTopNavHighlight("components");
       renderSidebar();
-      renderListView(viewContainer, {
-        title: q ? `Kết quả tìm kiếm cho: "${q}"` : "Tất cả mẫu trong kho",
-        subtitle: `Tìm thấy ${results.length} mẫu khớp với từ khóa (hỗ trợ tiếng Việt có dấu, không dấu và tiếng Anh).`,
-        list: results,
-        badgeText: `${results.length} kết quả`
+      renderCategoryOrSearchView(viewContainer, {
+        eyebrow: "SEARCH RESULTS",
+        title: q ? `Kết quả cho "${q}" (${results.length})` : "All Components",
+        subtitle: "Nhấp vào mẫu bất kỳ để xem ngay Live preview và Source code.",
+        list: results
       });
       return;
     }
@@ -950,7 +833,8 @@ ${safeJs}
       if (comp) {
         state.activeComponentId = comp.id;
         state.activeCategorySlug = comp.category;
-        updateTopNavHighlight("");
+        state.expandedCategories.add(comp.category);
+        updateTopNavHighlight("components");
         renderSidebar();
         renderComponentDetailView(viewContainer, comp);
         window.scrollTo({ top: 0, behavior: "smooth" });
@@ -958,44 +842,29 @@ ${safeJs}
       }
     }
 
-    // 3. Xem theo Danh mục (#/category/:slug)
+    // 3. Xem tất cả mẫu trong 1 Danh mục (#/category/:slug)
     if (rawHash.startsWith("#/category/")) {
       const slug = decodeURIComponent(rawHash.slice("#/category/".length).trim());
       const cat = categoryMap.get(slug);
       if (cat) {
         state.activeCategorySlug = cat.slug;
         state.activeComponentId = null;
-        const list = components.filter((c) => c.category === cat.slug);
-        updateTopNavHighlight("");
+        state.expandedCategories.add(cat.slug);
+        const list = getComponentsByCategory(cat.slug);
+        updateTopNavHighlight("components");
         renderSidebar();
-        renderListView(viewContainer, {
-          title: `${cat.icon} ${cat.order}. ${cat.nameEn} — ${cat.nameVi}`,
+        renderCategoryOrSearchView(viewContainer, {
+          eyebrow: cat.nameEn.toUpperCase(),
+          title: `${cat.nameEn} (${cat.nameVi})`,
           subtitle: cat.description,
-          list,
-          badgeText: `${list.length} mẫu thiết kế`
+          list
         });
         window.scrollTo({ top: 0, behavior: "smooth" });
         return;
       }
     }
 
-    // 4. Xem tất cả mẫu (#/all)
-    if (rawHash === "#/all") {
-      state.activeCategorySlug = "__all__";
-      state.activeComponentId = null;
-      updateTopNavHighlight("all");
-      renderSidebar();
-      renderListView(viewContainer, {
-        title: "Tất cả Component & Template trong kho",
-        subtitle: `Danh sách đầy đủ ${components.length} mẫu thuộc ${categories.length} danh mục chuẩn HTML/CSS/JS thuần.`,
-        list: components,
-        badgeText: `${components.length} mẫu`
-      });
-      window.scrollTo({ top: 0, behavior: "smooth" });
-      return;
-    }
-
-    // 5. Khung HTML5 Boilerplate (#/boilerplate)
+    // 4. Khung HTML5 Boilerplate (#/boilerplate)
     if (rawHash === "#/boilerplate") {
       state.activeCategorySlug = null;
       state.activeComponentId = null;
@@ -1006,17 +875,13 @@ ${safeJs}
       return;
     }
 
-    // 6. Mặc định: Trang chủ (#/)
+    // 5. Trang chủ (#/)
     state.activeCategorySlug = null;
     state.activeComponentId = null;
     updateTopNavHighlight("home");
     renderSidebar();
     renderHomeView(viewContainer);
   }
-
-  // ==========================================================================
-  // 8. KHỞI TẠO SỰ KIỆN TOÀN CỤC (THEME, SEARCH, PHÍM TẮT, DRAWER)
-  // ==========================================================================
 
   function initTheme() {
     const saved = localStorage.getItem("code_library_theme");
@@ -1036,18 +901,16 @@ ${safeJs}
     const iconEl = document.getElementById("themeIcon");
     const labelEl = document.getElementById("themeLabel");
     if (iconEl) iconEl.textContent = theme === "dark" ? "☀️" : "🌙";
-    if (labelEl) labelEl.textContent = theme === "dark" ? "Sáng" : "Tối";
+    if (labelEl) labelEl.textContent = theme === "dark" ? "Light" : "Dark";
   }
 
   function initGlobalEvents() {
-    // Liên kết bỏ qua điều hướng tới nội dung chính (không làm mất route hiện tại)
     const skipLink = document.getElementById("skipToMainLink");
     skipLink?.addEventListener("click", (e) => {
       e.preventDefault();
       document.getElementById("mainContent")?.focus();
     });
 
-    // Nhận sự kiện Escape từ bên trong iframe toàn màn hình
     window.addEventListener("message", (e) => {
       const fsIframe = document.getElementById("fullscreenIframe");
       if (
@@ -1060,7 +923,6 @@ ${safeJs}
       }
     });
 
-    // Ô tìm kiếm toàn cục
     const searchInput = document.getElementById("globalSearchInput");
     searchInput?.addEventListener("input", () => {
       const q = searchInput.value.trim();
@@ -1071,14 +933,12 @@ ${safeJs}
       }
     });
 
-    // Ô lọc nhanh 25 danh mục ở Sidebar
     const sidebarFilterInput = document.getElementById("sidebarFilterInput");
     sidebarFilterInput?.addEventListener("input", () => {
       state.sidebarFilter = sidebarFilterInput.value;
       renderSidebar();
     });
 
-    // Đóng/mở Sidebar trên màn hình nhỏ
     const sidebarToggleBtn = document.getElementById("sidebarToggleBtn");
     const sidebar = document.getElementById("categorySidebar");
     const backdrop = document.getElementById("sidebarBackdrop");
@@ -1090,7 +950,6 @@ ${safeJs}
     });
     backdrop?.addEventListener("click", closeMobileSidebar);
 
-    // Sự kiện trong Fullscreen Modal
     document.getElementById("closeFullscreenBtn")?.addEventListener("click", closeFullscreenModal);
     document.querySelectorAll("button[data-fsvp]").forEach((btn) => {
       btn.addEventListener("click", () => {
@@ -1103,7 +962,6 @@ ${safeJs}
       });
     });
 
-    // Phím tắt toàn cục: `/` tìm kiếm, `Ctrl+Enter` chạy lại preview, `Esc` đóng modal / xóa tìm kiếm
     window.addEventListener("keydown", (e) => {
       const tag = (e.target && e.target.tagName) || "";
       const isTyping = tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT";
@@ -1112,16 +970,6 @@ ${safeJs}
         e.preventDefault();
         searchInput?.focus();
         searchInput?.select();
-        return;
-      }
-
-      if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
-        const runBtn = document.getElementById("runPreviewBtn");
-        if (runBtn) {
-          e.preventDefault();
-          runBtn.click();
-          showToast("▶ Đã chạy lại Live Preview!");
-        }
         return;
       }
 
@@ -1141,7 +989,6 @@ ${safeJs}
     window.addEventListener("hashchange", handleRoute);
   }
 
-  // Khởi chạy ứng dụng
   initTheme();
   initGlobalEvents();
   handleRoute();

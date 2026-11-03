@@ -10,7 +10,7 @@
 - **Thư mục làm việc**: `d:\MY PROJECT\REA\projects\code-library`
 - **GitHub Repository**: `https://github.com/Banhtalon/web-library` (Nhánh chính: `main`)
 - **GitHub Pages (Live Demo)**: `https://banhtalon.github.io/web-library/`
-- **Phiên bản hiện tại**: `v1.0.0` (Cập nhật ngày `2026-11-03`)
+- **Phiên bản hiện tại**: `v1.1.0` (Cập nhật ngày `2026-11-03` — Cải tạo UI chuẩn bố cục CodeShikhi)
 
 ---
 
@@ -18,10 +18,10 @@
 1. **100% Thuần Web (Zero Dependencies)**:
    - Không dùng Bootstrap, Tailwind, jQuery hay framework đóng gói.
    - Mọi Component/Template trong kho đều viết bằng **HTML5 ngữ nghĩa + CSS3 (Flexbox, Grid, CSS Variables) + Vanilla JavaScript**.
-2. **Phong cách Tối giản với Đường viền Phân vùng Rõ nét (High-Contrast Minimalist UI)**:
-   - Màu sắc tối giản theo tông Slate + Blue (`#2563eb`) lấy cảm hứng từ CodeShikhi.
-   - Đường viền (`border`) dày `1.5px` đến `2px` rõ nét (`--border-subtle`, `--border-strong`, `--border-heavy`) để phân biệt rõ ràng giữa các vùng: Topbar, Sidebar 25 danh mục, Khung Live Preview, và Khung 4 Tab Code.
-   - Hỗ trợ chuyển đổi **Light Mode / Dark Mode** lưu trạng thái trong `localStorage`.
+2. **Phong cách Giao diện Chuẩn CodeShikhi (Indigo Pill Buttons + Accordion Tree + Clear Borders)**:
+   - Màu nhấn chủ đạo Tím Indigo (`#6c5ce7`), các nút bấm và bộ chuyển tab bo tròn dạng viên thuốc (`border-radius: 999px`).
+   - Cột trái `CATEGORIES` là menu cây đóng/mở (Accordion): bấm vào danh mục sẽ xổ danh sách mẫu con và mở thẳng mẫu Component đầu tiên ở cột phải (1-click flow).
+   - Cột phải gồm đúng 3 khối gọn gàng: **Header Component** (tối đa 3 pill tag) → **Live preview** (`Desktop / Mobile`, `Full preview`, `Open in new tab`) → **Source code** (chỉ 3 tab `HTML | CSS | JS` + thanh cửa sổ 3 chấm tròn macOS + 1 nút `Copy code` duy nhất, dừng ngay sau Source code).
 3. **Không có tính năng Mua bán / Thương mại & Không có Form Upload trên Web**:
    - Việc thêm mới hoặc cập nhật Component/Template được thực hiện thông qua **AI trong cửa sổ chat** hoặc thả file nguyên liệu vào thư mục `inbox/`.
 

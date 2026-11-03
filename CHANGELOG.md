@@ -5,6 +5,19 @@ Mọi thay đổi quan trọng của dự án **Code Library** đều được g
 
 ---
 
+## [1.1.0] - 2026-11-03
+
+### Đã thay đổi & Cải tiến (Changed)
+- **Cải tạo Giao diện Chuẩn Bố cục CodeShikhi (`index.html`, `css/app.css`, `js/app.js`)**:
+  - **Sidebar Cây Danh mục Đóng/Mở (`CATEGORIES` Accordion Tree)**: Nhấp vào tên danh mục lập tức xổ danh sách các mẫu con ngay tại cột bên trái và mở thẳng mẫu Component đầu tiên ở bên phải (trải nghiệm 1-click, không cần bấm qua nhiều trang trung gian). Mẫu đang chọn được tô nổi bật bằng nút viên thuốc màu tím Indigo (`#6c5ce7`).
+  - **Thiết kế Nút Bo tròn (`border-radius: 999px`) & Tông màu Indigo (`#6c5ce7`)**: Đồng bộ hệ thống nút bấm dạng pill (`👁 Full preview`, `🖥 Desktop` / `📱 Mobile`, bộ chuyển 3 tab `HTML | CSS | JS` và nút `📋 Copy code` nền tối) kèm đường viền phân vùng thanh thoát.
+  - **Tinh gọn Khu vực Chi tiết Component & Source Code**:
+    - Loại bỏ nút `Tất cả mẫu (25)` trên Topbar, loại bỏ tab thứ 4 (`Full HTML`) và 2 nút thừa (`Copy Full HTML`, `Tải file .html`).
+    - Thu gọn hàng tag còn tối đa 3 pill tag nhỏ gọn trong khối tiêu đề.
+    - Khối `Source code` chỉ giữ đúng 3 tab (`HTML`, `CSS`, `JS`), thanh cửa sổ 3 chấm tròn macOS kèm 1 nút `📋 Copy code` duy nhất và kết thúc trang gọn gàng ngay sau khối Source code.
+
+---
+
 ## [1.0.0] - 2026-11-03
 
 ### Đã thêm (Added)
