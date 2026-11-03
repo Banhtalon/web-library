@@ -155,7 +155,7 @@
       var b = r.top + r.height + (parseFloat(getComputedStyle(el).marginBottom)||0);
       if (b > max) max = b;
     }
-    var openMenus = document.querySelectorAll('.dropdown-menu.show, .collapse.show, .modal.show');
+    var openMenus = document.querySelectorAll('.dropdown-menu.show, .nav-collapse.show, .accordion-collapse.show, .collapse.show, .modal.show');
     for (var j = 0; j < openMenus.length; j++) {
       var mr = openMenus[j].getBoundingClientRect();
       if (mr.bottom + 16 > max) max = mr.bottom + 16;

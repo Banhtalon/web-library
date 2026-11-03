@@ -10,12 +10,12 @@
 
 ---
 
-## ✨ Điểm Nổi Bật (v2.0.0)
+## ✨ Điểm Nổi Bật (v2.1.0)
 
 - **📦 Trọn bộ 219 Mẫu Thiết kế trên 25 Danh mục**: Bao gồm đầy đủ tất cả các ví dụ trong từng nhóm (ví dụ: `Header & Navbar` đủ 9 mẫu, `Button` 8 mẫu, `Hero Sections` 11 mẫu, `Reviews` 10 mẫu, `Full Page Component` 18 mẫu...).
-- **🎯 Output Giống Hệt Bản Gốc với HTML, CSS, JS Đơn Giản**:
-  - Toàn bộ 219 mẫu được tách bạch rõ ràng thành 3 tab `HTML`, `CSS`, `JS` (không trộn lẫn `<style>` hay `<script>` trong HTML, không phụ thuộc jQuery hay OwlCarousel).
-  - Bộ dựng **Live Preview** hỗ trợ co giãn tỷ lệ khung nhìn **Desktop (`1280px`)** và **Mobile (`380px`)** kèm tự động căn chỉnh chiều cao (`autoHeight`) và 152 biểu tượng SVG nội tuyến hoạt động 100% offline.
+- **💎 100% HTML / CSS / JS Thuần Semantic (Không Dùng Class Bootstrap)**:
+  - Toàn bộ 219 mẫu sử dụng class ngữ nghĩa sạch sẽ, dễ đọc (`.hero-section`, `.hero-row`, `.col-half`, `.hero-title`, `.lead-text`, `.btn-primary`, `.icon-rocket-takeoff`...) — hoàn toàn không còn class utility của Bootstrap (`py-5`, `col-lg-6`, `display-4`, `fw-bold`, `bi-*` hay `data-bs-*`).
+  - Tab `CSS` được tối ưu ngắn gọn theo đúng cấu trúc từng component (kèm `@media` responsive và SVG icon nội tuyến ở cuối file), giúp code copy ra chạy độc lập 100% với giao diện đẹp y hệt bản gốc.
 - **🎨 Khung Source Code Tô Màu Cú Pháp (Syntax Highlighting)**:
   - Tự động căn lề 2 dấu cách (`js-beautify`) và tô màu cú pháp (`highlight.js` bảng màu GitHub Light / Dark) cho cả 3 tab `HTML`, `CSS`, `JS`.
   - Hỗ trợ thanh cuộn ngang/dọc mượt mà và nút `📋 Copy code` sao chép nhanh chỉ với 1 cú nhấp.

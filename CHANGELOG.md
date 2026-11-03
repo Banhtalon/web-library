@@ -5,6 +5,19 @@ Mọi thay đổi quan trọng của dự án **Code Library** đều được g
 
 ---
 
+## [2.1.0] - 2026-11-03
+
+### Đã thay đổi & Nâng cấp (Changed)
+- **Chuyển đổi Toàn bộ 219 Mẫu sang HTML / CSS / JS Thuần Semantic — Không dùng Class Bootstrap (`data/components.js`, `data/components/index.json`)**:
+  - Biên dịch toàn bộ 475 class utility/component của Bootstrap 5 (`py-*`, `px-*`, `col-lg-*`, `col-md-*`, `g-*`, `d-flex`, `justify-content-*`, `align-items-*`, `fw-*`, `fs-*`, `display-*`, `rounded-*`, `shadow-*`...) và 153 class biểu tượng `bi-*` sang các class ngữ nghĩa tường minh (`.hero-section`, `.hero-row`, `.col-half`, `.col-third`, `.hero-title`, `.lead-text`, `.btn-primary`, `.service-card`, `.icon-*`...).
+  - Thay thế toàn bộ thuộc tính `data-bs-*` bằng thuộc tính chuẩn tự nhiên (`data-toggle`, `data-target`, `data-parent`, `data-slide`, `data-slide-to`, `data-dismiss`) kèm mã Vanilla JS độc lập cho từng mẫu.
+  - Hợp nhất và rút gọn các thuộc tính CSS (`padding`, `margin`, `border`, `@media` responsive) theo đúng từng class ngữ nghĩa của component, đồng thời nhúng gọn các biểu tượng SVG (`/* Inline SVG Icons */`) ở cuối tab CSS để mã nguồn sao chép ra chạy độc lập 100%.
+- **Tinh gọn `js/preview-base.js` & Mở rộng Kiểm thử (`tests/validate-library.mjs`)**:
+  - Loại bỏ hoàn toàn gói CSS Bootstrap 520KB khỏi `js/preview-base.js` (giảm dung lượng file từ 523KB xuống dưới 0.5KB); Live Preview giờ đây hiển thị trực tiếp `comp.html`, `comp.css`, `comp.js` thuần của từng mẫu.
+  - Bổ sung kiểm thử tự động trong `tests/validate-library.mjs` để chặn 100% class utility/icon Bootstrap, thuộc tính `data-bs-*`, biến `--bs-*` và kiểm tra tính khớp nối selector giữa HTML, CSS và JS trên cả 219 mẫu.
+
+---
+
 ## [2.0.0] - 2026-11-03
 
 ### Đã thêm & Nâng cấp (Added & Changed)

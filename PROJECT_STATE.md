@@ -10,14 +10,15 @@
 - **Thư mục làm việc**: `d:\MY PROJECT\REA\projects\code-library`
 - **GitHub Repository**: `https://github.com/Banhtalon/web-library` (Nhánh chính: `main`)
 - **GitHub Pages (Live Demo)**: `https://banhtalon.github.io/web-library/`
-- **Phiên bản hiện tại**: `v2.0.0` (Cập nhật ngày `2026-11-03` — Import trọn bộ 219 Component của CodeShikhi + Syntax Highlighted Source Code)
+- **Phiên bản hiện tại**: `v2.1.0` (Cập nhật ngày `2026-11-03` — Chuyển đổi toàn bộ 219 Component sang HTML / CSS / JS thuần Semantic, loại bỏ 100% class Bootstrap)
 
 ---
 
 ## 2. Triết lý & Nguyên tắc Thiết kế Cốt lõi
-1. **Đầy đủ 219 Mẫu trên 25 Danh mục & Chạy Offline 100%**:
-   - Toàn bộ 219 thiết kế từ 25 danh mục của CodeShikhi đã được chuẩn hóa sạch sẽ thành 3 phần `HTML`, `CSS`, `JS` riêng biệt (không còn thẻ `<style>` hay `<script>` trộn lẫn trong HTML, không phụ thuộc jQuery hay CDN bên ngoài).
-   - `js/preview-base.js` đóng gói sẵn hệ thống CSS layout, 152 biểu tượng SVG (`bi-*`) nội tuyến và bộ xử lý tương tác Vanilla JS (`collapse`, `dropdown`, `carousel`, `tabs`, `modal`, `toast`, `alert`) giúp **output hiển thị trong Live Preview giống hệt 100% với bản gốc**.
+1. **100% Pure Semantic HTML / CSS / Vanilla JS (Không dùng Class Bootstrap)**:
+   - Toàn bộ 219 thiết kế trên 25 danh mục đã được biên dịch từ hệ thống utility/grid/icon của Bootstrap 5 sang **Semantic HTML5 + Consolidated CSS3 + Standalone Vanilla JS** (0 class `py-*`, `px-*`, `col-lg-*`, `d-flex`, `fw-bold`, `display-*`, `bi-*`, 0 thuộc tính `data-bs-*`, 0 biến `--bs-*`).
+   - Mỗi phần tử HTML chỉ mang tên class ngữ nghĩa gọn gàng, dễ đọc (ví dụ: `.hero-section`, `.container`, `.hero-row`, `.col-half`, `.hero-title`, `.lead-text`, `.btn-primary`, `.icon-rocket-takeoff`).
+   - Tab `CSS` của từng mẫu chứa đầy đủ các quy tắc bố cục, màu sắc, `@media` responsive, hiệu ứng `:hover` và phần `/* Inline SVG Icons */` ở cuối file, đảm bảo người dùng copy HTML + CSS + JS ra chạy độc lập 100% giống hệt Live Preview mà không cần thư viện ngoài.
 2. **Giao diện Chuẩn Bố cục CodeShikhi & Khung Code Tô Màu Cú Pháp Đẹp Mắt**:
    - Cột trái `CATEGORIES` hiển thị cây 25 danh mục kèm số lượng mẫu thực tế (`Header & Navbar 9`, `Button 8`, `Hero Sections 11`...). Bấm vào danh mục sẽ xổ danh sách mẫu con và mở ngay mẫu đầu tiên (1-click flow).
    - Khung **Live preview** hỗ trợ co giãn khung nhìn Desktop (`1280px` scaled) / Mobile (`380px`) và tự động co giãn chiều cao (`autoHeight`).
