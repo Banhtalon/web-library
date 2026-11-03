@@ -1,238 +1,411 @@
-/**
- * Danh sách 25 danh mục chuẩn của Code Library (Song ngữ Anh - Việt)
- * Đồng bộ với data/categories.json
- */
-(function (root) {
-  const categories = [
-    {
-      slug: "header",
-      order: 1,
-      nameEn: "Header & Navbar",
-      nameVi: "Thanh điều hướng",
-      icon: "🧭",
-      description: "Thanh menu đầu trang đa năng, hỗ trợ menu con và nút hamburger cho thiết bị di động.",
-      keywords: ["header", "navbar", "navigation", "menu", "top bar", "thanh dieu huong", "menu ngang", "dau trang"]
-    },
-    {
-      slug: "button",
-      order: 2,
-      nameEn: "Button",
-      nameVi: "Nút bấm tương tác",
-      icon: "🔘",
-      description: "Bộ sưu tập các kiểu nút bấm hiện đại: nút chính, viền mảnh, hiệu ứng sóng (ripple) và trạng thái tải.",
-      keywords: ["button", "cta", "click", "ripple", "loading button", "nut bam", "nut nhan", "hanh dong"]
-    },
-    {
-      slug: "hero",
-      order: 3,
-      nameEn: "Hero Sections",
-      nameVi: "Khối mở đầu trang",
-      icon: "🚀",
-      description: "Khối giới thiệu nổi bật đầu trang kèm tiêu đề lớn, nút kêu gọi hành động (CTA) và thẻ số liệu.",
-      keywords: ["hero", "banner", "intro", "landing", "cta", "khoi mo dau", "gioi thieu dau trang", "bia trang"]
-    },
-    {
-      slug: "carousel",
-      order: 4,
-      nameEn: "Carousel",
-      nameVi: "Trình chiếu trượt",
-      icon: "🎠",
-      description: "Khung trình chiếu ảnh và nội dung chuyển động mượt mà kèm nút điều hướng, chấm chỉ mục và tự động chạy.",
-      keywords: ["carousel", "slider", "slideshow", "gallery", "trinh chieu", "slide anh", "truot ngang"]
-    },
-    {
-      slug: "cards",
-      order: 5,
-      nameEn: "Cards",
-      nameVi: "Thẻ nội dung",
-      icon: "🗂️",
-      description: "Khung thẻ chứa nội dung linh hoạt cho bài viết, khóa học, sản phẩm kèm nhãn trạng thái và bộ lọc.",
-      keywords: ["card", "box", "product card", "blog card", "grid", "the noi dung", "the san pham", "khung the"]
-    },
-    {
-      slug: "services",
-      order: 6,
-      nameEn: "Services",
-      nameVi: "Lưới dịch vụ",
-      icon: "🛠️",
-      description: "Bố cục lưới giới thiệu các dịch vụ, giải pháp chuyên nghiệp kèm biểu tượng và bảng chi tiết.",
-      keywords: ["services", "features", "solutions", "grid", "dich vu", "tinh nang", "giai phap"]
-    },
-    {
-      slug: "team",
-      order: 7,
-      nameEn: "Team Members",
-      nameVi: "Đội ngũ nhân sự",
-      icon: "👥",
-      description: "Khối giới thiệu thành viên đội ngũ với ảnh đại diện, vai trò, bộ lọc phòng ban và liên kết hồ sơ.",
-      keywords: ["team", "members", "staff", "profile", "authors", "doi ngu", "nhan su", "thanh vien"]
-    },
-    {
-      slug: "history-section",
-      order: 8,
-      nameEn: "History Section",
-      nameVi: "Dòng thời gian & Lịch sử",
-      icon: "⏳",
-      description: "Dòng thời gian (Timeline) trình bày các cột mốc phát triển, lịch sử hình thành hoặc lộ trình dự án.",
-      keywords: ["history", "timeline", "milestones", "roadmap", "lich su", "dong thoi gian", "cot moc", "lo trinh"]
-    },
-    {
-      slug: "statistics-counters",
-      order: 9,
-      nameEn: "Statistics JS Counters",
-      nameVi: "Bộ đếm số liệu JS",
-      icon: "📈",
-      description: "Khối thống kê số liệu ấn tượng với hiệu ứng nhảy số tự động bằng JavaScript thuần.",
-      keywords: ["statistics", "counter", "numbers", "metrics", "kpi", "thong ke", "bo dem so", "nhay so"]
-    },
-    {
-      slug: "notices",
-      order: 10,
-      nameEn: "Notices",
-      nameVi: "Bảng thông báo & Tin chạy",
-      icon: "📢",
-      description: "Bảng thông báo cho trường học, doanh nghiệp kèm thanh chữ chạy (ticker), lọc loại tin và tìm kiếm.",
-      keywords: ["notices", "announcement", "bulletin", "ticker", "alert", "thong bao", "bang tin", "tin chay"]
-    },
-    {
-      slug: "flash-sale",
-      order: 11,
-      nameEn: "Flash Sale",
-      nameVi: "Khuyến mãi & Đếm ngược",
-      icon: "⚡",
-      description: "Khối chương trình giảm giá chớp nhoáng kèm đồng hồ đếm ngược thời gian thực và thanh tiến độ số lượng.",
-      keywords: ["flash sale", "countdown", "discount", "offer", "promo", "khuyen mai", "dem nguoc", "giam gia"]
-    },
-    {
-      slug: "pricing",
-      order: 12,
-      nameEn: "Pricing",
-      nameVi: "Bảng giá dịch vụ",
-      icon: "💳",
-      description: "Bảng so sánh các gói cước dịch vụ có công tắc chuyển đổi thanh toán theo Tháng / Năm tự động tính giá.",
-      keywords: ["pricing", "plans", "subscription", "billing", "packages", "bang gia", "goi cuoc", "chi phi"]
-    },
-    {
-      slug: "testimonials",
-      order: 13,
-      nameEn: "Testimonials",
-      nameVi: "Ý kiến khách hàng",
-      icon: "💬",
-      description: "Khối trích dẫn đánh giá, nhận xét thực tế từ học viên và khách hàng kèm bộ lọc chuyển đổi.",
-      keywords: ["testimonials", "quotes", "feedback", "client stories", "y kien khach hang", "nhan xet", "phan hoi"]
-    },
-    {
-      slug: "table-section",
-      order: 14,
-      nameEn: "Table Section",
-      nameVi: "Bảng dữ liệu & Bộ lọc",
-      icon: "📊",
-      description: "Bảng dữ liệu chuẩn mực có thanh tìm kiếm nhanh, sắp xếp theo cột và nhãn trạng thái trực quan.",
-      keywords: ["table", "data grid", "sort", "filter", "list", "bang du lieu", "danh sach", "sap xep"]
-    },
-    {
-      slug: "form",
-      order: 15,
-      nameEn: "Form",
-      nameVi: "Biểu mẫu nhập liệu",
-      icon: "📝",
-      description: "Biểu mẫu đăng ký/tuyển sinh đa trường kèm kiểm tra dữ liệu hợp lệ (validation) trực tiếp bằng JS.",
-      keywords: ["form", "input", "validation", "admission", "registration", "bieu mau", "nhap lieu", "dang ky"]
-    },
-    {
-      slug: "calendar-section",
-      order: 16,
-      nameEn: "Calendar Section",
-      nameVi: "Lịch học thuật & Sự kiện",
-      icon: "📅",
-      description: "Lịch tháng tương tác cho phép chuyển tháng/năm và xem danh sách sự kiện, lịch thi hoặc ngày nghỉ.",
-      keywords: ["calendar", "schedule", "events", "academic calendar", "planner", "lich", "su kien", "lich hoc"]
-    },
-    {
-      slug: "login",
-      order: 17,
-      nameEn: "Login & Signup",
-      nameVi: "Đăng nhập & Đăng ký",
-      icon: "🔐",
-      description: "Khung xác thực tài khoản cho phép chuyển tab Đăng nhập / Đăng ký, ẩn/hiện mật khẩu và kiểm tra lỗi.",
-      keywords: ["login", "signup", "register", "auth", "password", "dang nhap", "dang ky", "tai khoan"]
-    },
-    {
-      slug: "contact",
-      order: 18,
-      nameEn: "Contact",
-      nameVi: "Liên hệ & Hỗ trợ",
-      icon: "📬",
-      description: "Khối thông tin liên hệ kết hợp biểu mẫu gửi tin nhắn trực tiếp kèm thông báo trạng thái phản hồi.",
-      keywords: ["contact", "support", "message", "address", "helpdesk", "lien he", "gui tin nhan", "ho tro"]
-    },
-    {
-      slug: "faq",
-      order: 19,
-      nameEn: "FAQ",
-      nameVi: "Câu hỏi thường gặp",
-      icon: "❓",
-      description: "Danh sách câu hỏi thường gặp dạng đóng/mở (Accordion) mượt mà kèm ô lọc câu hỏi nhanh.",
-      keywords: ["faq", "accordion", "questions", "answers", "help", "cau hoi thuong gap", "hoi dap", "dong mo"]
-    },
-    {
-      slug: "footer",
-      order: 20,
-      nameEn: "Footer & BigFooter",
-      nameVi: "Chân trang đầy đủ",
-      icon: "⚓",
-      description: "Chân trang nhiều cột chứa liên kết điều hướng, thông tin bản quyền, chọn ngôn ngữ và nút lên đầu trang.",
-      keywords: ["footer", "bigfooter", "bottom", "sitemap", "copyright", "chan trang", "cuoi trang", "ban quyen"]
-    },
-    {
-      slug: "newsletter",
-      order: 21,
-      nameEn: "Newsletter",
-      nameVi: "Đăng ký nhận bản tin",
-      icon: "✉️",
-      description: "Khối thu thập email nhận bản tin cập nhật kèm chọn chủ đề quan tâm và kiểm tra định dạng email.",
-      keywords: ["newsletter", "subscribe", "email capture", "digest", "ban tin", "nhan email", "dang ky tin"]
-    },
-    {
-      slug: "reviews",
-      order: 22,
-      nameEn: "Reviews",
-      nameVi: "Đánh giá xếp hạng sao",
-      icon: "⭐",
-      description: "Hệ thống tổng hợp điểm xếp hạng 5 sao, thanh tỷ lệ phần trăm từng mức sao và khung gửi đánh giá mới.",
-      keywords: ["reviews", "ratings", "stars", "score", "product review", "danh gia", "xep hang sao", "cham diem"]
-    },
-    {
-      slug: "video-cards",
-      order: 23,
-      nameEn: "Video Cards",
-      nameVi: "Thẻ phát Video & Playlist",
-      icon: "🎬",
-      description: "Bố cục trình phát video nổi bật kết hợp danh sách bài học (Playlist) chuyển đổi trực tiếp khi bấm.",
-      keywords: ["video", "playlist", "media", "player", "course video", "the video", "danh sach phat", "bai giang"]
-    },
-    {
-      slug: "home-page-full",
-      order: 24,
-      nameEn: "Home Page Full Component",
-      nameVi: "Mẫu Trang chủ hoàn chỉnh",
-      icon: "🏠",
-      description: "Bản ghép hoàn chỉnh một Trang chủ gồm Header, Hero, Số liệu, Lưới tính năng và Footer trong một mẫu.",
-      keywords: ["home page", "landing page", "full home", "starter page", "trang chu hoan chinh", "mau trang chu"]
-    },
-    {
-      slug: "full-page-com",
-      order: 25,
-      nameEn: "Full Page Component",
-      nameVi: "Trang Web hoàn chỉnh Copy & Paste",
-      icon: "🌐",
-      description: "Mẫu trang web cổng thông tin/khóa học hoàn chỉnh từ đầu đến cuối, sẵn sàng copy 1 lần và chạy ngay.",
-      keywords: ["full page", "complete website", "template", "all in one", "trang web hoan chinh", "mau nguyen trang"]
-    }
-  ];
-
-  if (typeof module !== "undefined" && module.exports) {
-    module.exports = categories;
+// 25 Categories from CodeShikhi (25 categories, 219 components)
+(function (root, data) {
+  if (typeof module === "object" && module.exports) {
+    module.exports = data;
   }
-  root.CODE_LIBRARY_CATEGORIES = categories;
-})(typeof globalThis !== "undefined" ? globalThis : window);
+  if (root) {
+    root.CODE_LIBRARY_CATEGORIES = data;
+    root.CL_CATEGORIES = data;
+  }
+})(typeof globalThis !== "undefined" ? globalThis : typeof window !== "undefined" ? window : this, [
+  {
+    "id": "header",
+    "slug": "header",
+    "order": 1,
+    "name": "Header & Navbar",
+    "nameEn": "Header & Navbar",
+    "nameVi": "Thanh điều hướng & Header",
+    "icon": "🧭",
+    "description": "Top navigation bars for any kind of site.",
+    "keywords": [
+      "header",
+      "header & navbar",
+      "thanh điều hướng & header"
+    ],
+    "componentCount": 9
+  },
+  {
+    "id": "button",
+    "slug": "button",
+    "order": 2,
+    "name": "Button",
+    "nameEn": "Button",
+    "nameVi": "Nút bấm tương tác",
+    "icon": "🔘",
+    "description": "Button (Nút bấm tương tác) — 8 ready-to-use HTML, CSS & JS components.",
+    "keywords": [
+      "button",
+      "button",
+      "nút bấm tương tác"
+    ],
+    "componentCount": 8
+  },
+  {
+    "id": "hero",
+    "slug": "hero",
+    "order": 3,
+    "name": "Hero Sections",
+    "nameEn": "Hero Sections",
+    "nameVi": "Khối mở đầu trang (Hero)",
+    "icon": "🚀",
+    "description": "Eye-catching intro sections with a clear call to action.",
+    "keywords": [
+      "hero",
+      "hero sections",
+      "khối mở đầu trang (hero)"
+    ],
+    "componentCount": 11
+  },
+  {
+    "id": "Carousel",
+    "slug": "Carousel",
+    "order": 4,
+    "name": "Carousel",
+    "nameEn": "Carousel",
+    "nameVi": "Trình chiếu ảnh trượt",
+    "icon": "🎠",
+    "description": "How it works \nThe carousel is a slideshow for cycling through a series of content, built with CSS 3D transforms and a bit of JavaScript. It works with a series of images, text, or custom markup. It also includes support for previous/next controls and indicators.\n\nFor performance reasons, carousels must be manually initialized using the carousel constructor method. Without initialization, some of the event listeners (specifically, the events needed touch/swipe support) will not be registered until a user has explicitly activated a control or indicator.\n\nThe only exception are autoplaying carousels with the data-bs-ride=\"carousel\" attribute as these are initialized automatically on page load. If you’re using autoplaying carousels with the data attribute, don’t explicitly initialize the same carousels with the constructor method.\n\nNested carousels are not supported. You should also be aware that carousels in general can often cause usability and accessibility challenges.",
+    "keywords": [
+      "carousel",
+      "carousel",
+      "trình chiếu ảnh trượt"
+    ],
+    "componentCount": 8
+  },
+  {
+    "id": "cards",
+    "slug": "cards",
+    "order": 5,
+    "name": "Cards",
+    "nameEn": "Cards",
+    "nameVi": "Thẻ nội dung (Cards)",
+    "icon": "🗂️",
+    "description": "A card is a flexible and extensible content container. It includes options for headers and footers, a wide variety of content, contextual background colors, and powerful display options. If you’re familiar with Bootstrap 3, cards replace our old panels, wells, and thumbnails. Similar functionality to those components is available as modifier classes for cards.",
+    "keywords": [
+      "cards",
+      "cards",
+      "thẻ nội dung (cards)"
+    ],
+    "componentCount": 8
+  },
+  {
+    "id": "services",
+    "slug": "services",
+    "order": 6,
+    "name": "Services",
+    "nameEn": "Services",
+    "nameVi": "Khối Dịch vụ & Tính năng",
+    "icon": "🛠️",
+    "description": "Showcase what you offer in a clean grid.",
+    "keywords": [
+      "services",
+      "services",
+      "khối dịch vụ & tính năng"
+    ],
+    "componentCount": 9
+  },
+  {
+    "id": "team",
+    "slug": "team",
+    "order": 7,
+    "name": "Team Members",
+    "nameEn": "Team Members",
+    "nameVi": "Đội ngũ nhân sự",
+    "icon": "👥",
+    "description": "Introduce your people with photo cards.",
+    "keywords": [
+      "team",
+      "team members",
+      "đội ngũ nhân sự"
+    ],
+    "componentCount": 9
+  },
+  {
+    "id": "history-section",
+    "slug": "history-section",
+    "order": 8,
+    "name": "History Section",
+    "nameEn": "History Section",
+    "nameVi": "Dòng thời gian & Lịch sử",
+    "icon": "⏳",
+    "description": "History Section (Dòng thời gian & Lịch sử) — 8 ready-to-use HTML, CSS & JS components.",
+    "keywords": [
+      "history-section",
+      "history section",
+      "dòng thời gian & lịch sử"
+    ],
+    "componentCount": 8
+  },
+  {
+    "id": "Statistics-JS-counters-Section",
+    "slug": "Statistics-JS-counters-Section",
+    "order": 9,
+    "name": "Statistics JS counters Section",
+    "nameEn": "Statistics JS counters Section",
+    "nameVi": "Bộ đếm số liệu JS",
+    "icon": "📈",
+    "description": "Statistics JS counters Section (Bộ đếm số liệu JS) — 8 ready-to-use HTML, CSS & JS components.",
+    "keywords": [
+      "statistics-js-counters-section",
+      "statistics js counters section",
+      "bộ đếm số liệu js"
+    ],
+    "componentCount": 8
+  },
+  {
+    "id": "Notices",
+    "slug": "Notices",
+    "order": 10,
+    "name": "Notices",
+    "nameEn": "Notices",
+    "nameVi": "Bảng thông báo & Tin chạy",
+    "icon": "📢",
+    "description": "Notices (Bảng thông báo & Tin chạy) — 8 ready-to-use HTML, CSS & JS components.",
+    "keywords": [
+      "notices",
+      "notices",
+      "bảng thông báo & tin chạy"
+    ],
+    "componentCount": 8
+  },
+  {
+    "id": "flash-sale",
+    "slug": "flash-sale",
+    "order": 11,
+    "name": "Flash Sale",
+    "nameEn": "Flash Sale",
+    "nameVi": "Khuyến mãi chớp nhoáng",
+    "icon": "⚡",
+    "description": "Limited-time offers with countdowns.",
+    "keywords": [
+      "flash-sale",
+      "flash sale",
+      "khuyến mãi chớp nhoáng"
+    ],
+    "componentCount": 8
+  },
+  {
+    "id": "pricing",
+    "slug": "pricing",
+    "order": 12,
+    "name": "Pricing",
+    "nameEn": "Pricing",
+    "nameVi": "Bảng giá dịch vụ",
+    "icon": "💎",
+    "description": "Plan comparison tables and cards.",
+    "keywords": [
+      "pricing",
+      "pricing",
+      "bảng giá dịch vụ"
+    ],
+    "componentCount": 8
+  },
+  {
+    "id": "testimonials",
+    "slug": "testimonials",
+    "order": 13,
+    "name": "Testimonials",
+    "nameEn": "Testimonials",
+    "nameVi": "Đánh giá khách hàng",
+    "icon": "💬",
+    "description": "Customer quotes and reviews.",
+    "keywords": [
+      "testimonials",
+      "testimonials",
+      "đánh giá khách hàng"
+    ],
+    "componentCount": 8
+  },
+  {
+    "id": "Table-Section",
+    "slug": "Table-Section",
+    "order": 14,
+    "name": "Table Section",
+    "nameEn": "Table Section",
+    "nameVi": "Bảng dữ liệu",
+    "icon": "📊",
+    "description": "Table Section (Bảng dữ liệu) — 8 ready-to-use HTML, CSS & JS components.",
+    "keywords": [
+      "table-section",
+      "table section",
+      "bảng dữ liệu"
+    ],
+    "componentCount": 8
+  },
+  {
+    "id": "form",
+    "slug": "form",
+    "order": 15,
+    "name": "Form",
+    "nameEn": "Form",
+    "nameVi": "Biểu mẫu nhập liệu",
+    "icon": "📝",
+    "description": "Form (Biểu mẫu nhập liệu) — 8 ready-to-use HTML, CSS & JS components.",
+    "keywords": [
+      "form",
+      "form",
+      "biểu mẫu nhập liệu"
+    ],
+    "componentCount": 8
+  },
+  {
+    "id": "Calendar-Section",
+    "slug": "Calendar-Section",
+    "order": 16,
+    "name": "Calendar Section",
+    "nameEn": "Calendar Section",
+    "nameVi": "Lịch & Sự kiện",
+    "icon": "📅",
+    "description": "Calendar Section (Lịch & Sự kiện) — 8 ready-to-use HTML, CSS & JS components.",
+    "keywords": [
+      "calendar-section",
+      "calendar section",
+      "lịch & sự kiện"
+    ],
+    "componentCount": 8
+  },
+  {
+    "id": "login",
+    "slug": "login",
+    "order": 17,
+    "name": "Login & Signup",
+    "nameEn": "Login & Signup",
+    "nameVi": "Đăng nhập & Đăng ký",
+    "icon": "🔐",
+    "description": "Auth forms ready to drop in.",
+    "keywords": [
+      "login",
+      "login & signup",
+      "đăng nhập & đăng ký"
+    ],
+    "componentCount": 9
+  },
+  {
+    "id": "contact",
+    "slug": "contact",
+    "order": 18,
+    "name": "Contact",
+    "nameEn": "Contact",
+    "nameVi": "Liên hệ & Bản đồ",
+    "icon": "📍",
+    "description": "Contact forms and info blocks.",
+    "keywords": [
+      "contact",
+      "contact",
+      "liên hệ & bản đồ"
+    ],
+    "componentCount": 8
+  },
+  {
+    "id": "faq",
+    "slug": "faq",
+    "order": 19,
+    "name": "FAQ",
+    "nameEn": "FAQ",
+    "nameVi": "Câu hỏi thường gặp (FAQ)",
+    "icon": "❓",
+    "description": "Collapsible question lists.",
+    "keywords": [
+      "faq",
+      "faq",
+      "câu hỏi thường gặp (faq)"
+    ],
+    "componentCount": 8
+  },
+  {
+    "id": "footer",
+    "slug": "footer",
+    "order": 20,
+    "name": "Footer & BigFooter",
+    "nameEn": "Footer & BigFooter",
+    "nameVi": "Chân trang (Footer)",
+    "icon": "🧱",
+    "description": "Site footers from minimal to feature-rich.",
+    "keywords": [
+      "footer",
+      "footer & bigfooter",
+      "chân trang (footer)"
+    ],
+    "componentCount": 8
+  },
+  {
+    "id": "newsletter",
+    "slug": "newsletter",
+    "order": 21,
+    "name": "Newsletter",
+    "nameEn": "Newsletter",
+    "nameVi": "Đăng ký nhận bản tin",
+    "icon": "✉️",
+    "description": "Email capture sections.",
+    "keywords": [
+      "newsletter",
+      "newsletter",
+      "đăng ký nhận bản tin"
+    ],
+    "componentCount": 8
+  },
+  {
+    "id": "reviews",
+    "slug": "reviews",
+    "order": 22,
+    "name": "Reviews",
+    "nameEn": "Reviews",
+    "nameVi": "Xếp hạng & Nhận xét",
+    "icon": "⭐",
+    "description": "Reviews (Xếp hạng & Nhận xét) — 10 ready-to-use HTML, CSS & JS components.",
+    "keywords": [
+      "reviews",
+      "reviews",
+      "xếp hạng & nhận xét"
+    ],
+    "componentCount": 10
+  },
+  {
+    "id": "video-cards",
+    "slug": "video-cards",
+    "order": 23,
+    "name": "Video Cards",
+    "nameEn": "Video Cards",
+    "nameVi": "Thẻ trình chiếu Video",
+    "icon": "🎬",
+    "description": "YouTube video card designs — grids, featured players, playlists and thumbnails, all built on Bootstrap 5.",
+    "keywords": [
+      "video-cards",
+      "video cards",
+      "thẻ trình chiếu video"
+    ],
+    "componentCount": 8
+  },
+  {
+    "id": "Home-Page-Full-Component",
+    "slug": "Home-Page-Full-Component",
+    "order": 24,
+    "name": "Home Page Full Component",
+    "nameEn": "Home Page Full Component",
+    "nameVi": "Bố cục Trang chủ đầy đủ",
+    "icon": "🏠",
+    "description": "Home Page Full Component (Bố cục Trang chủ đầy đủ) — 8 ready-to-use HTML, CSS & JS components.",
+    "keywords": [
+      "home-page-full-component",
+      "home page full component",
+      "bố cục trang chủ đầy đủ"
+    ],
+    "componentCount": 8
+  },
+  {
+    "id": "full-page-com",
+    "slug": "full-page-com",
+    "order": 25,
+    "name": "Full Page Component",
+    "nameEn": "Full Page Component",
+    "nameVi": "Mẫu Trang Web hoàn chỉnh",
+    "icon": "🌐",
+    "description": "Any Page Full Page Component Ready, just copy & Past",
+    "keywords": [
+      "full-page-com",
+      "full page component",
+      "mẫu trang web hoàn chỉnh"
+    ],
+    "componentCount": 18
+  }
+]);

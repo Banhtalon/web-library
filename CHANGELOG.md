@@ -5,6 +5,20 @@ Mọi thay đổi quan trọng của dự án **Code Library** đều được g
 
 ---
 
+## [2.0.0] - 2026-11-03
+
+### Đã thêm & Nâng cấp (Added & Changed)
+- **Import Toàn bộ 219 Component & Template từ CodeShikhi trên cả 25 Danh mục (`data/categories.js`, `data/components.js`)**:
+  - Đưa vào đầy đủ 100% số lượng thiết kế của từng danh mục: `Header & Navbar` (9 mẫu), `Button` (8 mẫu), `Hero Sections` (11 mẫu), `Carousel` (8 mẫu), `Cards` (8 mẫu), `Services` (9 mẫu), `Team Members` (9 mẫu), `History Section` (8 mẫu), `Statistics JS counters Section` (8 mẫu), `Notices` (8 mẫu), `Flash Sale` (8 mẫu), `Pricing` (8 mẫu), `Testimonials` (8 mẫu), `Table Section` (8 mẫu), `Form` (8 mẫu), `Calendar Section` (8 mẫu), `Login & Signup` (9 mẫu), `Contact` (8 mẫu), `FAQ` (8 mẫu), `Footer & BigFooter` (8 mẫu), `Newsletter` (8 mẫu), `Reviews` (10 mẫu), `Video Cards` (8 mẫu), `Home Page Full Component` (8 mẫu), `Full Page Component` (18 mẫu).
+  - Tự động tách các thẻ `<style>` và `<script>` nhúng lẫn trong HTML sang đúng tab `CSS` và `JS`, loại bỏ phụ thuộc jQuery / OwlCarousel / Bootstrap JS ngoài, đồng thời bổ sung mã CSS & Vanilla JS tường minh cho từng mẫu.
+- **Engine Live Preview Offline 100% Giống Hệt CodeShikhi (`js/preview-base.js`, `js/app.js`)**:
+  - Tích hợp bộ CSS utility/component cục bộ + toàn bộ 152 biểu tượng `bi-*` dưới dạng SVG mask nội tuyến + bộ điều khiển tương tác Vanilla JS (`collapse`, `dropdown`, `carousel`, `tabs`, `modal`, `alert`, `toast`).
+  - Hỗ trợ co giãn tỷ lệ khung nhìn Desktop (`1280px` scaled) / Mobile (`380px`) và tự động đo chiều cao nội dung (`autoHeight` bao gồm cả khi mở menu Dropdown/Collapse).
+- **Khung Source Code Tô Màu Cú Pháp (Syntax Highlighting) & Định Dạng Chuẩn (`js/code-formatter.js`, `css/app.css`)**:
+  - Định dạng mã nguồn 2 dấu cách (`js-beautify`) và tô màu cú pháp (`highlight.js` bảng màu GitHub Light / Dark) cho cả 3 tab `HTML`, `CSS`, `JS` kèm thanh cuộn ngang/dọc và nút `Copy code` phản hồi trạng thái `✓ Copied!`.
+
+---
+
 ## [1.1.0] - 2026-11-03
 
 ### Đã thay đổi & Cải tiến (Changed)

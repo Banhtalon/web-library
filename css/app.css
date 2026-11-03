@@ -8,9 +8,19 @@
   --bg-surface: #ffffff;
   --bg-hero-box: #f5f6fa;
   --bg-canvas: #f1f5f9;
-  --bg-code-card: #f8fafc;
+  --bg-code-card: #fafbfc;
   --bg-code-bar: #ffffff;
-  --text-code: #1e293b;
+  --text-code: #24292e;
+
+  /* Bảng màu Syntax Highlighting chuẩn CodeShikhi (GitHub Light) */
+  --hljs-fg: #24292e;
+  --hljs-keyword: #d73a49;
+  --hljs-title: #6f42c1;
+  --hljs-attr: #005cc5;
+  --hljs-string: #032f62;
+  --hljs-builtin: #e36209;
+  --hljs-comment: #6a737d;
+  --hljs-tag: #22863a;
 
   --text-primary: #0f172a;
   --text-secondary: #475569;
@@ -46,9 +56,18 @@
   --bg-surface: #111827;
   --bg-hero-box: #161f33;
   --bg-canvas: #0f172a;
-  --bg-code-card: #0d1322;
+  --bg-code-card: #0d1117;
   --bg-code-bar: #161f33;
-  --text-code: #e2e8f0;
+  --text-code: #e6edf3;
+
+  --hljs-fg: #e6edf3;
+  --hljs-keyword: #ff7b72;
+  --hljs-title: #d2a8ff;
+  --hljs-attr: #79c0ff;
+  --hljs-string: #a5d6ff;
+  --hljs-builtin: #ffa657;
+  --hljs-comment: #8b949e;
+  --hljs-tag: #7ee787;
 
   --text-primary: #f8fafc;
   --text-secondary: #cbd5e1;
@@ -613,7 +632,7 @@ body {
 
 .preview-gray-stage {
   background: var(--bg-canvas);
-  padding: 18px;
+  padding: 14px;
   display: flex;
   justify-content: center;
 }
@@ -621,17 +640,20 @@ body {
 .preview-inner-box {
   width: 100%;
   max-width: 100%;
+  margin: 0 auto;
   background: #ffffff;
   border: var(--border-strong);
   border-radius: var(--radius-md);
   overflow: hidden;
-  transition: width 0.2s ease;
   box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+.preview-scale-wrap {
+  transform-origin: top left;
 }
 
 .preview-iframe {
   width: 100%;
-  min-height: 290px;
   border: none;
   display: block;
   background: #ffffff;
@@ -645,16 +667,16 @@ body {
   padding: 4px;
   background: var(--bg-surface);
   border: var(--border-strong);
-  border-radius: var(--radius-pill);
+  border-radius: 10px;
 }
 
 .pill-switch-btn {
   padding: 5px 14px;
   border: none;
-  border-radius: var(--radius-pill);
+  border-radius: 7px;
   background: transparent;
   color: var(--text-secondary);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.12s ease;
@@ -670,7 +692,7 @@ body {
 .source-card {
   background: var(--bg-code-card);
   border: var(--border-strong);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   overflow: hidden;
   box-shadow: var(--shadow-soft);
 }
@@ -691,8 +713,8 @@ body {
 }
 
 .win-dot {
-  width: 11px;
-  height: 11px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   display: inline-block;
 }
@@ -702,28 +724,179 @@ body {
 
 .source-lang-label {
   margin-left: 8px;
-  font-size: 0.75rem;
-  font-weight: 800;
-  letter-spacing: 0.05em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--text-muted);
 }
 
-.source-textarea {
-  width: 100%;
-  min-height: 310px;
-  padding: 18px 20px;
+.copy-code-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
   border: none;
-  background: var(--bg-code-card);
-  color: var(--text-code);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 0.85rem;
-  line-height: 1.65;
-  resize: vertical;
-  display: block;
+  background: #0f172a;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
 }
-.source-textarea:focus {
-  outline: none;
+.copy-code-btn:hover {
+  background: #334155;
+}
+.copy-code-btn.is-copied {
+  background: #10b981;
+  color: #ffffff;
+}
+
+.source-pre {
+  margin: 0;
+  max-height: 460px;
+  overflow: auto;
+  background: var(--bg-code-card);
+  padding: 16px 18px;
+  font-size: 13px;
+  line-height: 1.625;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  tab-size: 2;
+}
+
+.source-pre code.hljs {
+  display: block;
+  font-family: inherit;
+  white-space: pre;
+  color: var(--hljs-fg);
+  background: transparent;
+}
+
+/* Highlight.js Syntax Palette chuẩn CodeShikhi */
+.hljs {
+  color: var(--hljs-fg);
+  background: var(--bg-code-card);
+}
+.hljs-doctag,
+.hljs-keyword,
+.hljs-meta .hljs-keyword,
+.hljs-template-tag,
+.hljs-template-variable,
+.hljs-type,
+.hljs-variable.language_ {
+  color: var(--hljs-keyword);
+}
+.hljs-title,
+.hljs-title.class_,
+.hljs-title.class_.inherited__,
+.hljs-title.function_ {
+  color: var(--hljs-title);
+}
+.hljs-attr,
+.hljs-attribute,
+.hljs-literal,
+.hljs-meta,
+.hljs-number,
+.hljs-operator,
+.hljs-selector-attr,
+.hljs-selector-class,
+.hljs-selector-id,
+.hljs-variable {
+  color: var(--hljs-attr);
+}
+.hljs-meta .hljs-string,
+.hljs-regexp,
+.hljs-string {
+  color: var(--hljs-string);
+}
+.hljs-built_in,
+.hljs-symbol {
+  color: var(--hljs-builtin);
+}
+.hljs-code,
+.hljs-comment,
+.hljs-formula {
+  color: var(--hljs-comment);
+}
+.hljs-name,
+.hljs-quote,
+.hljs-selector-pseudo,
+.hljs-selector-tag {
+  color: var(--hljs-tag);
+}
+.hljs-subst {
+  color: var(--hljs-fg);
+}
+.hljs-emphasis {
+  font-style: italic;
+}
+.hljs-strong {
+  font-weight: 700;
+}
+
+/* More designs in this section (bên dưới Source code) */
+.more-designs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.more-design-card {
+  display: block;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: var(--border-strong);
+  background: var(--bg-surface);
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: border-color 0.14s ease, box-shadow 0.14s ease, transform 0.14s ease;
+}
+.more-design-card:hover {
+  border-color: var(--accent);
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-1px);
+}
+.more-design-eyebrow {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--accent);
+}
+.more-design-title {
+  margin-top: 4px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* Category All-Designs Stacked View */
+.cat-stack-list {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+.cat-stack-item {
+  background: var(--bg-surface);
+  border: var(--border-strong);
+  border-radius: var(--radius-lg);
+  padding: 20px 22px;
+  box-shadow: var(--shadow-soft);
+}
+.cat-stack-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.cat-stack-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 /* ==========================================================================
