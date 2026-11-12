@@ -1,18 +1,18 @@
-# 📚 Code Library — Kho 219 Component & Template HTML / CSS / JS (25 Danh Mục)
+# 📚 Code Library — Kho 220 Component & Template HTML / CSS / JS (25 Danh Mục)
 
 [![Live Demo](https://img.shields.io/badge/Live_Demo-GitHub_Pages-6c5ce7?style=for-the-badge&logo=github)](https://banhtalon.github.io/web-library/)
-[![Components](https://img.shields.io/badge/Components-219_Templates_(25_Categories)-0f172a?style=for-the-badge)](#)
+[![Components](https://img.shields.io/badge/Components-220_Templates_(25_Categories)-0f172a?style=for-the-badge)](#)
 [![Offline Ready](https://img.shields.io/badge/Runtime-Pure_HTML_%7C_CSS_%7C_Vanilla_JS-10b981?style=for-the-badge)](#)
 
-**Code Library** là kho tra cứu, xem trước trực tiếp (**Live Preview**) và sao chép mã nguồn của **toàn bộ 219 Component & Template thuộc 25 danh mục** theo chuẩn bố cục **CodeShikhi**, sử dụng **HTML, CSS và Vanilla JavaScript** đơn giản, dễ hiểu cùng khung hiển thị mã nguồn được **định dạng và tô màu cú pháp (Syntax Highlighting)** đẹp mắt.
+**Code Library** là kho tra cứu, xem trước trực tiếp (**Live Preview**) và sao chép mã nguồn của **220 Component & Template thuộc 25 danh mục** theo chuẩn bố cục **CodeShikhi**, sử dụng **HTML, CSS và Vanilla JavaScript** đơn giản, dễ hiểu cùng khung hiển thị mã nguồn được **định dạng và tô màu cú pháp (Syntax Highlighting)** đẹp mắt.
 
 🔗 **Truy cập trực tiếp (GitHub Pages):** **[https://banhtalon.github.io/web-library/](https://banhtalon.github.io/web-library/)**
 
 ---
 
-## ✨ Điểm Nổi Bật (v2.1.0)
+## ✨ Điểm Nổi Bật (v2.2.0)
 
-- **📦 Trọn bộ 219 Mẫu Thiết kế trên 25 Danh mục**: Bao gồm đầy đủ tất cả các ví dụ trong từng nhóm (ví dụ: `Header & Navbar` đủ 9 mẫu, `Button` 8 mẫu, `Hero Sections` 11 mẫu, `Reviews` 10 mẫu, `Full Page Component` 18 mẫu...).
+- **📦 Trọn bộ 220 Mẫu Thiết kế trên 25 Danh mục**: Bao gồm đầy đủ 219 mẫu gốc và các mẫu thiết kế mới được phân tích/chuyển đổi bằng AI từ ảnh chụp (ví dụ: `Header & Navbar` 10 mẫu với `Ayro UI Blue Navbar`, `Button` 8 mẫu, `Hero Sections` 11 mẫu, `Reviews` 10 mẫu, `Full Page Component` 18 mẫu...).
 - **💎 100% HTML / CSS / JS Thuần Semantic (Không Dùng Class Bootstrap)**:
   - Toàn bộ 219 mẫu sử dụng class ngữ nghĩa sạch sẽ, dễ đọc (`.hero-section`, `.hero-row`, `.col-half`, `.hero-title`, `.lead-text`, `.btn-primary`, `.icon-rocket-takeoff`...) — hoàn toàn không còn class utility của Bootstrap (`py-5`, `col-lg-6`, `display-4`, `fw-bold`, `bi-*` hay `data-bs-*`).
   - Tab `CSS` được tối ưu ngắn gọn theo đúng cấu trúc từng component (kèm `@media` responsive và SVG icon nội tuyến ở cuối file), giúp code copy ra chạy độc lập 100% với giao diện đẹp y hệt bản gốc.
@@ -23,11 +23,11 @@
 
 ---
 
-## 🗂️ Thống Kê 25 Danh Mục & 219 Mẫu Trong Kho
+## 🗂️ Thống Kê 25 Danh Mục & 220 Mẫu Trong Kho
 
 | STT | Danh mục (Tiếng Anh) | Tên Tiếng Việt | Số lượng mẫu | Đường dẫn nhanh |
 | :---: | :--- | :--- | :---: | :--- |
-| 1 | **Header & Navbar** | Thanh điều hướng & Header | **9 designs** | `#/category/header` |
+| 1 | **Header & Navbar** | Thanh điều hướng & Header | **10 designs** | `#/category/header` |
 | 2 | **Button** | Nút bấm tương tác | **8 designs** | `#/category/button` |
 | 3 | **Hero Sections** | Khối mở đầu trang (Hero) | **11 designs** | `#/category/hero` |
 | 4 | **Carousel** | Trình chiếu ảnh trượt | **8 designs** | `#/category/Carousel` |

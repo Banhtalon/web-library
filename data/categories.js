@@ -1,4 +1,4 @@
-// 25 Categories from CodeShikhi (25 categories, 219 components)
+// 25 Categories from CodeShikhi (25 categories, 220 components)
 (function (root, data) {
   if (typeof module === "object" && module.exports) {
     module.exports = data;
@@ -22,7 +22,7 @@
       "header & navbar",
       "thanh điều hướng & header"
     ],
-    "componentCount": 9
+    "componentCount": 10
   },
   {
     "id": "button",

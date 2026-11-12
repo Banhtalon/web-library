@@ -6,11 +6,11 @@
 ---
 
 ## 1. Thông tin Tổng quan Dự án
-- **Tên dự án**: **Code Library** (Kho 219 Component & Template trên 25 danh mục chuẩn HTML5 / CSS3 / Vanilla JS)
+- **Tên dự án**: **Code Library** (Kho 220 Component & Template trên 25 danh mục chuẩn HTML5 / CSS3 / Vanilla JS)
 - **Thư mục làm việc**: `d:\MY PROJECT\REA\projects\code-library`
 - **GitHub Repository**: `https://github.com/Banhtalon/web-library` (Nhánh chính: `main`)
 - **GitHub Pages (Live Demo)**: `https://banhtalon.github.io/web-library/`
-- **Phiên bản hiện tại**: `v2.1.0` (Cập nhật ngày `2026-11-03` — Chuyển đổi toàn bộ 219 Component sang HTML / CSS / JS thuần Semantic, loại bỏ 100% class Bootstrap)
+- **Phiên bản hiện tại**: `v2.2.0` (Cập nhật ngày `2026-11-12` — Bổ sung quy trình thêm Template từ hình ảnh bằng AI & thêm mẫu `Ayro-UI-Blue-Navbar` nâng tổng kho lên 220 Component thuần Semantic)
 
 ---
 
@@ -55,11 +55,11 @@ code-library/
 
 ---
 
-## 4. Kiểm kê 25 Danh mục & 219 Mẫu (`v2.0.0`)
+## 4. Kiểm kê 25 Danh mục & 220 Mẫu (`v2.2.0`)
 
 | STT | Category Slug | Tên Danh mục (EN — VI) | Số lượng mẫu |
 | :---: | :--- | :--- | :---: |
-| 1 | `header` | Header & Navbar — Thanh điều hướng & Header | **9** |
+| 1 | `header` | Header & Navbar — Thanh điều hướng & Header | **10** |
 | 2 | `button` | Button — Nút bấm tương tác | **8** |
 | 3 | `hero` | Hero Sections — Khối mở đầu trang (Hero) | **11** |
 | 4 | `Carousel` | Carousel — Trình chiếu ảnh trượt | **8** |
@@ -84,4 +84,13 @@ code-library/
 | 23 | `video-cards` | Video Cards — Thẻ trình chiếu Video | **8** |
 | 24 | `Home-Page-Full-Component` | Home Page Full Component — Bố cục Trang chủ đầy đủ | **8** |
 | 25 | `full-page-com` | Full Page Component — Mẫu Trang Web hoàn chỉnh | **18** |
-| **Tổng** | **25 Danh mục** | **Đầy đủ 100% kho mẫu CodeShikhi** | **219 mẫu** |
+| **Tổng** | **25 Danh mục** | **219 mẫu CodeShikhi + các mẫu thêm bằng AI** | **220 mẫu** |
+
+---
+
+## 5. Quy trình Thêm Template Mới Từ Ảnh Chụp Bằng AI (Cách 1)
+Khi người dùng gửi ảnh chụp giao diện vào khung chat:
+1. Phân tích bố cục, bảng màu RGB/Hex, tỷ lệ khoảng cách, icon SVG và trạng thái tương tác từ ảnh.
+2. Viết mã nguồn **100% Pure Semantic HTML5 + Consolidated CSS3 + Standalone Vanilla JS** (0 class Bootstrap, định dạng 2 spaces qua `js/code-formatter.js`).
+3. Thêm mẫu vào đúng `category` trong `data/components/index.json` & `data/components.js` và đồng bộ `componentCount` trong `data/categories.json` & `data/categories.js`.
+4. Cập nhật `tests/validate-library.mjs`, chạy `npm test` đảm bảo pass 100%, cập nhật `CHANGELOG.md` / `PROJECT_STATE.md` / `README.md` và `git push origin main`.

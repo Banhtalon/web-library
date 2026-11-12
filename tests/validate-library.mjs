@@ -32,9 +32,9 @@ for (const cat of categories) {
   assert.ok(Array.isArray(cat.keywords) && cat.keywords.length > 0, `Category ${cat.slug} missing keywords`);
 }
 
-// 2. Validate all 219 CodeShikhi components
+// 2. Validate all 220 library components (219 CodeShikhi + AI image-to-code templates)
 assert.ok(Array.isArray(components), "components must be an array");
-assert.equal(components.length, 219, `Expected 219 components from CodeShikhi, got: ${components.length}`);
+assert.equal(components.length, 220, `Expected 220 components in library, got: ${components.length}`);
 
 const idSet = new Set();
 const categoryCoverage = new Map(categories.map((c) => [c.slug, 0]));
@@ -140,8 +140,8 @@ for (const comp of components) {
   }
 }
 
-// 3. Validate exact category counts (e.g. Header & Navbar has 9 designs)
-assert.equal(categoryCoverage.get("header"), 9, "Header & Navbar must have all 9 designs");
+// 3. Validate exact category counts (e.g. Header & Navbar has 10 designs)
+assert.equal(categoryCoverage.get("header"), 10, "Header & Navbar must have all 10 designs");
 assert.equal(categoryCoverage.get("button"), 8, "Button must have all 8 designs");
 assert.equal(categoryCoverage.get("hero"), 11, "Hero Sections must have all 11 designs");
 assert.equal(categoryCoverage.get("full-page-com"), 18, "Full Page Component must have all 18 designs");
@@ -233,6 +233,17 @@ assert.ok(
     heroSplit.html.includes('class="btn-primary"') &&
     heroSplit.html.includes('class="icon-rocket-takeoff"'),
   "hero-split HTML must use clean semantic classes (.hero-section, .hero-row, .col-half, .hero-title, .btn-primary, .icon-rocket-takeoff)"
+);
+
+const ayroNav = components.find((c) => c.id === "Ayro-UI-Blue-Navbar");
+assert.ok(
+  ayroNav &&
+    ayroNav.category === "header" &&
+    ayroNav.html.includes('class="ayro-header"') &&
+    ayroNav.html.includes('class="btn-signin"') &&
+    ayroNav.html.includes('class="btn-signup"') &&
+    ayroNav.css.includes("#3b5fcd"),
+  "Ayro-UI-Blue-Navbar must exist in header category with pure semantic HTML and #3b5fcd royal-blue styling"
 );
 
 console.log(

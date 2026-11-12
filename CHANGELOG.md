@@ -5,6 +5,15 @@ Mọi thay đổi quan trọng của dự án **Code Library** đều được g
 
 ---
 
+## [2.2.0] - 2026-11-12
+
+### Đã thêm (Added)
+- **Thêm Mẫu `Ayro UI Blue Navbar` từ Ảnh Chụp bằng AI (`data/components.js`, `data/components/index.json`, `data/categories.js`, `data/categories.json`)**:
+  - Phân tích trực tiếp ảnh thiết kế Ayro UI (tông xanh `#3b5fcd`, khối menu active/hover `#4e6fd2` cao toàn thanh, logo vector 2 lớp bán trong suốt, menu xổ xuống `About ⌄` và cụm nút `Sign In` / `Sign Up`) để tái tạo thành HTML5 / CSS3 / Vanilla JS thuần Semantic (0 class Bootstrap).
+  - Đưa mẫu `Ayro-UI-Blue-Navbar` lên đầu nhóm `Header & Navbar` (nâng danh mục `header` lên **10 mẫu** và tổng kho lên **220 mẫu**), kèm hỗ trợ co giãn responsive trên Mobile (`380px`).
+
+---
+
 ## [2.1.0] - 2026-11-03
 
 ### Đã thay đổi & Nâng cấp (Changed)
