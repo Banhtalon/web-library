@@ -1,9 +1,11 @@
 {
-  "name": "code-library",
-  "version": "1.0.0",
+  "name": "web-library-portal",
+  "version": "3.0.0",
   "private": true,
-  "description": "Kho tra cứu Component & Template chuẩn HTML5, CSS3 và JavaScript thuần (không phụ thuộc Bootstrap).",
+  "description": "Unified GitHub Pages Portal combining Code Library (Vanilla 220), Ayro UI Library (Bootstrap 5 + Next.js), and Web Gọi Tên Ngẫu Nhiên.",
   "scripts": {
-    "test": "node tests/validate-library.mjs"
+    "build": "node scripts/build-portal.mjs",
+    "start": "node scripts/serve-portal.mjs",
+    "test": "node scripts/validate-portal.mjs"
   }
 }

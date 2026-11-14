@@ -3,109 +3,198 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Code Library — Kho tra cứu 25 danh mục Component & Template chuẩn HTML5, CSS3 và JavaScript thuần theo phong cách CodeShikhi." />
-  <title>Code Library — Kho Component &amp; Template HTML/CSS/JS Thuần</title>
-  <link rel="stylesheet" href="./css/app.css" />
+  <title>Web Library — Cổng 3 Web App</title>
+  <meta
+    name="description"
+    content="Cổng truy cập nhanh 3 web app: Code Library (220 mẫu HTML/CSS/JS thuần), Ayro UI (259 mẫu Bootstrap 5) và Gọi Tên Ngẫu Nhiên."
+  />
+  <link rel="icon" type="image/svg+xml" href="./goi-ten/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap"
+  />
+  <script>
+    (() => {
+      try {
+        const saved = localStorage.getItem('wl-portal-theme');
+        const prefersDark =
+          window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const theme =
+          saved === 'dark' || saved === 'light' ? saved : prefersDark ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+  <link rel="stylesheet" href="./assets/portal.css" />
 </head>
 <body>
-  <a href="#mainContent" class="skip-link" id="skipToMainLink">Chuyển tới nội dung chính</a>
+  <a class="skip-link" href="#main">Chuyển tới nội dung chính</a>
 
-  <!-- TOP HEADER NAVBAR (Bố cục chuẩn CodeShikhi) -->
-  <header class="topbar" role="banner">
-    <div class="topbar-inner">
-      <div class="topbar-left">
-        <button type="button" class="icon-pill-btn mobile-menu-btn" id="sidebarToggleBtn" aria-label="Đóng/mở danh mục" aria-expanded="false">
-          ☰
-        </button>
-        <a href="#/" class="brand-link" aria-label="Trang chủ Code Library">
-          <span class="brand-mark" aria-hidden="true">❖</span>
-          <span class="brand-name">CodeLibrary</span>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a class="brand" href="./">
+        <span class="brand-mark" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7" rx="1.5" />
+            <rect x="14" y="3" width="7" height="7" rx="1.5" />
+            <rect x="3" y="14" width="7" height="7" rx="1.5" />
+            <rect x="14" y="14" width="7" height="7" rx="1.5" />
+          </svg>
+        </span>
+        <span>Web Library</span>
+      </a>
+
+      <div class="topbar-actions">
+        <a
+          class="icon-btn"
+          href="https://github.com/Banhtalon/web-library"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Mã nguồn trên GitHub"
+          title="GitHub"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.4 5.4 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65S8.93 17.38 9 18v4" />
+            <path d="M9 18c-4.51 2-5-2-7-2" />
+          </svg>
         </a>
-      </div>
 
-      <nav class="topbar-nav" aria-label="Điều hướng chính">
-        <a href="#/" class="topnav-link" data-nav="home">Home</a>
-        <a href="#/component/Ayro-UI-Blue-Navbar" class="topnav-link" data-nav="components">Components</a>
-        <a href="#/boilerplate" class="topnav-link" data-nav="boilerplate">HTML5 Starter</a>
-      </nav>
-
-      <div class="topbar-right">
-        <div class="topbar-search">
-          <label for="globalSearchInput" class="sr-only">Tìm kiếm component hoặc danh mục</label>
-          <span class="search-icon" aria-hidden="true">🔍</span>
-          <input
-            type="search"
-            id="globalSearchInput"
-            class="search-input"
-            placeholder="Search components... (/)"
-            autocomplete="off"
-          />
-        </div>
-        <button type="button" class="theme-pill-btn" id="themeToggleBtn" aria-label="Chuyển đổi giao diện Sáng / Tối">
-          <span id="themeIcon" aria-hidden="true">🌙</span>
-          <span id="themeLabel">Dark</span>
+        <button
+          type="button"
+          class="icon-btn"
+          id="themeToggle"
+          aria-label="Đổi giao diện Sáng / Tối"
+          aria-pressed="false"
+          title="Đổi giao diện Sáng / Tối"
+        >
+          <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4" />
+            <path d="M12 2v2" />
+            <path d="M12 20v2" />
+            <path d="m4.93 4.93 1.41 1.41" />
+            <path d="m17.66 17.66 1.41 1.41" />
+            <path d="M2 12h2" />
+            <path d="M20 12h2" />
+            <path d="m6.34 17.66-1.41 1.41" />
+            <path d="m19.07 4.93-1.41 1.41" />
+          </svg>
+          <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+          </svg>
         </button>
       </div>
     </div>
   </header>
 
-  <!-- APP SHELL: LEFT FLOATING CATEGORIES TREE + RIGHT CONTENT -->
-  <div class="app-shell">
-    <div class="sidebar-backdrop" id="sidebarBackdrop" hidden></div>
+  <main id="main" class="portal-main">
+    <div class="container">
+      <section class="hero">
+        <span class="eyebrow">3 Web App · 1 Cổng Truy Cập</span>
+        <h1>Chọn công cụ bạn muốn mở</h1>
+        <p class="hero-sub">
+          Hai thư viện giao diện dựng sẵn cho lập trình viên và một bộ trò chơi gọi tên cho lớp học.
+        </p>
+      </section>
 
-    <aside class="sidebar" id="categorySidebar" aria-label="Danh sách 25 danh mục">
-      <div class="sidebar-card">
-        <div class="sidebar-header">
-          <span class="sidebar-heading">CATEGORIES</span>
-          <input
-            type="search"
-            id="sidebarFilterInput"
-            class="sidebar-filter-input"
-            placeholder="Lọc nhanh danh mục..."
-            aria-label="Lọc nhanh danh mục ở thanh bên"
-          />
-        </div>
-        <nav class="sidebar-tree" id="sidebarCategoryList" aria-label="Cây danh mục và mẫu giao diện"></nav>
-      </div>
-    </aside>
+      <section class="bento-grid" aria-label="Danh sách 3 ứng dụng web">
+        <a class="bento-card" data-accent="blue" href="./code-library/">
+          <div class="card-media">
+            <img
+              src="./assets/illustrations/code-library.jpg"
+              alt="Minh họa các khối giao diện và mã nguồn của Code Library"
+              width="800"
+              height="450"
+              decoding="async"
+            />
+            <span class="media-badge">220 mẫu</span>
+          </div>
+          <div class="card-body">
+            <div class="card-meta">
+              <span class="card-tag">HTML · CSS · JS thuần</span>
+              <span class="card-cta-icon" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M7 17 17 7" />
+                  <path d="M7 7h10v10" />
+                </svg>
+              </span>
+            </div>
+            <h2>Code Library</h2>
+            <p>Kho component gọn nhẹ không dùng framework — xem trực tiếp và chép code ngay.</p>
+          </div>
+        </a>
 
-    <main class="main-workspace" id="mainContent" tabindex="-1">
-      <div id="viewContainer"></div>
-    </main>
-  </div>
+        <a class="bento-card" data-accent="indigo" href="./ayroui/">
+          <div class="card-media">
+            <img
+              src="./assets/illustrations/ayroui.jpg"
+              alt="Minh họa hệ thống lưới giao diện Bootstrap 5 của Ayro UI"
+              width="800"
+              height="450"
+              decoding="async"
+            />
+            <span class="media-badge">259 mẫu</span>
+          </div>
+          <div class="card-body">
+            <div class="card-meta">
+              <span class="card-tag">Bootstrap 5 · Next.js</span>
+              <span class="card-cta-icon" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M7 17 17 7" />
+                  <path d="M7 7h10v10" />
+                </svg>
+              </span>
+            </div>
+            <h2>Ayro UI</h2>
+            <p>Bộ block giao diện chuẩn Bootstrap 5 cho landing page, bảng giá và trang quản trị.</p>
+          </div>
+        </a>
 
-  <!-- FULLSCREEN PREVIEW MODAL -->
-  <div class="fs-modal" id="fullscreenModal" role="dialog" aria-modal="true" aria-labelledby="fsModalTitle" hidden>
-    <div class="fs-modal-bar">
-      <div class="fs-modal-title">
-        <strong id="fsModalTitle">Full preview</strong>
-        <span class="fs-modal-sub" id="fsModalCategory"></span>
-      </div>
-      <div class="fs-modal-actions">
-        <div class="pill-switch-group" role="group" aria-label="Kích thước màn hình trong chế độ phóng to">
-          <button type="button" class="pill-switch-btn is-active" data-fsvp="100%">🖥 Desktop</button>
-          <button type="button" class="pill-switch-btn" data-fsvp="375px">📱 Mobile</button>
-        </div>
-        <button type="button" class="pill-btn pill-btn-dark" id="closeFullscreenBtn">✕ Close (Esc)</button>
-      </div>
+        <a class="bento-card" data-accent="emerald" href="./goi-ten/">
+          <div class="card-media">
+            <img
+              src="./assets/illustrations/goi-ten.jpg"
+              alt="Minh họa vòng quay may mắn và trò chơi lớp học Gọi Tên Ngẫu Nhiên"
+              width="800"
+              height="450"
+              decoding="async"
+            />
+            <span class="media-badge">10+ trò chơi</span>
+          </div>
+          <div class="card-body">
+            <div class="card-meta">
+              <span class="card-tag">Trò chơi lớp học</span>
+              <span class="card-cta-icon" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M7 17 17 7" />
+                  <path d="M7 7h10v10" />
+                </svg>
+              </span>
+            </div>
+            <h2>Gọi Tên Ngẫu Nhiên</h2>
+            <p>Vòng quay, bốc thăm, đua tốc độ và chia nhóm học sinh trực quan trên máy chiếu.</p>
+          </div>
+        </a>
+      </section>
     </div>
-    <div class="fs-modal-stage">
-      <iframe
-        id="fullscreenIframe"
-        class="preview-iframe"
-        sandbox="allow-scripts allow-forms"
-        title="Khung xem trước toàn màn hình"
-      ></iframe>
+  </main>
+
+  <footer class="portal-footer">
+    <div class="container footer-inner">
+      <span>Banhtalon / web-library</span>
+      <span class="footer-hint">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="10" />
+          <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
+        </svg>
+        <span>Dùng nút <strong>Portal</strong> góc phải dưới để đổi nhanh giữa 3 web</span>
+      </span>
     </div>
-  </div>
+  </footer>
 
-  <!-- TOAST NOTIFICATION -->
-  <div class="toast-container" id="toastContainer" aria-live="polite" aria-atomic="true"></div>
-
-  <script src="./js/preview-base.js"></script>
-  <script src="./js/code-formatter.js"></script>
-  <script src="./data/categories.js"></script>
-  <script src="./data/components.js"></script>
-  <script src="./js/app.js"></script>
+  <script src="./assets/portal.js"></script>
 </body>
 </html>
